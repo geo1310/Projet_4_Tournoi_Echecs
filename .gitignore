@@ -2,3 +2,6 @@
 __*
 !.gitignore
 !__init__.py
+/.venv-projet4
+/.vscode
+
