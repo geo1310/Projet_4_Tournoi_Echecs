@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import random
 
 NATIONAL_ID = 'GB13106'
@@ -15,23 +15,26 @@ class Player:
     def __str__(self):
         return f"{self.first_name} {self.last_name} née(e) le {self.birthday}"
 
-    def is_player_in_list(self, new_player, players_list):
-        for player in players_list:
-            if player["nom"] == new_player["nom"] and player["prenom"] == new_player["prenom"] and player["date_de_naissance"] == new_player["date_de_naissance"]:
-                return True
-        return False
+    def to_json(self):
+        # Crée un dictionnaire avec les données du joueur pour enregistrement fichier json
+        return {
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "birthday": self.birthday,
+            "score": self.score
+        }
 
     def save_player(self):
         fichier_json = "data/players/players.json"
-        players_list = PlayersList('players.json')
+        players_list = DataList('players/players.json')
         # Nouveau joueur
         new_player = {
-            "nom": self.last_name,
-            "prenom": self.first_name,
-            "date_de_naissance": self.birthday
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "birthday": self.birthday
         }
         # Vérifie si le joueur est deja dans la liste
-        if not self.is_player_in_list(new_player, players_list):
+        if not any(player == new_player for player in players_list):
             players_list.append(new_player)
             # Enregistrez la liste mise à jour dans le fichier JSON
             with open(fichier_json, "w") as fichier:
@@ -43,16 +46,16 @@ class Player:
 
     def delete_player(self):
         fichier_json = "data/players/players.json"
-        players_list = PlayersList('players.json')
+        players_list = DataList('players/players.json')
         # joueur
-        player = {
-            "nom": self.last_name,
-            "prenom": self.first_name,
-            "date_de_naissance": self.birthday
+        new_player = {
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "birthday": self.birthday
         }
         # Vérifie si le joueur est dans la liste
-        if self.is_player_in_list(player, players_list):
-            players_list.remove(player)
+        if any(player == new_player for player in players_list):
+            players_list.remove(new_player)
             # Enregistrez la liste mise à jour dans le fichier JSON
             with open(fichier_json, "w") as fichier:
                 json.dump(players_list, fichier)
@@ -60,22 +63,6 @@ class Player:
             print("\nLe joueur a été supprimé de", fichier_json)
         else:
             print("\nLe joueur n'est pas dans la liste !!!")
-
-
-class PlayersList(list):
-    # crée la liste des joueurs depuis un fichier json et peut la mélanger
-    def __init__(self, players_file_list):
-        self.players_file_list = players_file_list
-        full_path = os.path.join("./data/players/", players_file_list)
-        if os.path.exists(full_path):
-            with open(full_path, "r") as fichier:
-                players = json.load(fichier)
-        else:
-            players = []
-        self.extend(players)
-
-    def shuffle(self):
-        random.shuffle(self)
 
 
 class Match:
@@ -98,20 +85,90 @@ class Round:
 
 
 class Tournament:
-    def __init__(self, name, location, description, rounds_list, players_list, nb_rounds=4, round=1,start_date='', end_date=''):
+    def __init__(self, name, location, description, nb_rounds=4, players_list=None, rounds_list=None, act_round=1, start_date='', end_date='', status='new'):
         self.national_id = NATIONAL_ID
         self.name = name
         self.location = location
+        self.description = description
+        self.nb_rounds = nb_rounds
+        self.players_list = players_list if players_list is not None else []
+        self.rounds_list = rounds_list if rounds_list is not None else []
+        self.act_round = act_round
         self.start_date = start_date
         self.end_date = end_date
-        self.nb_rounds = nb_rounds
-        self.round = round
-        self.rounds_list = rounds_list
-        self.players_list = players_list
-        self.description = description
+        self.status = status
 
     def __str__(self):
         return f"Tournoi {self.name} du {self.start_date} au {self.end_date}"
+    
+    def to_json(self):
+        # Crée un dictionnaire avec les données du joueur pour enregistrement fichier json
+        return {
+            "national_id": self.national_id,
+            "name": self.name,
+            "location": self.location,
+            "description": self.description,
+            "nb_rounds": self.nb_rounds,
+            "players_list": self.players_list,
+            "rounds_list": self.rounds_list,
+            "act_round": self.act_round,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "status": self.status
+        }
+
+    def save_tournament(self):
+        fichier_json = "data/tournaments/tournaments.json"
+        tournaments_list = DataList('tournaments/tournaments.json')
+        existing_tournament = next((t for t in tournaments_list if t["name"] == self.name and t["location"] == self.location), None)
+        if existing_tournament is not None:
+            existing_tournament.update({
+                "national_id": self.national_id,
+                "name": self.name,
+                "location": self.location,
+                "description": self.description,
+                "nb_rounds": self.nb_rounds,
+                "rounds_list": self.rounds_list,
+                "players_list": self.players_list,
+                "act_round": self.act_round,
+                "start_date": self.start_date,
+                "end_date": self.end_date,
+                "status": self.status,
+            })
+        else:
+            tournament = {
+                "national_id": self.national_id,
+                "name": self.name,
+                "location": self.location,
+                "description": self.description,
+                "nb_rounds": self.nb_rounds,
+                "rounds_list": self.rounds_list,
+                "players_list": self.players_list,
+                "act_round": self.act_round,
+                "start_date": self.start_date,
+                "end_date": self.end_date,
+                "status": self.status,
+            }
+            tournaments_list.append(tournament)
+        # Enregistrez la liste mise à jour dans le fichier JSON
+        with open(fichier_json, "w") as fichier:
+            json.dump(tournaments_list, fichier)
+        print("\nLe tournoi a été enregistré avec succes !!!")    
+
+class DataList(list):
+    # crée une liste d'apres un fichier json et peut la mélanger
+    def __init__(self, data_file_list):
+        self.data_file_list = data_file_list
+        full_path = os.path.join("./data/", data_file_list)
+        if os.path.exists(full_path):
+            with open(full_path, "r") as fichier:
+                data = json.load(fichier)
+        else:
+            data = []
+        self.extend(data)
+
+    def shuffle(self):
+        random.shuffle(self)
 
 
 if __name__ == "__main__":

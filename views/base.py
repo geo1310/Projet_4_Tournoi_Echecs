@@ -16,36 +16,44 @@ class View:
         '''Affiche la liste des joueurs à partir d'une liste'''
         self.underline_title_and_cls("Liste des Joueurs")
         for player in players_list:
-            nom = player['nom']
-            prenom = player['prenom']
-            date_naissance = player['date_de_naissance']
+            nom = player['first_name']
+            prenom = player['last_name']
+            date_naissance = player['birthday']
             print("Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15}".format(nom, prenom, date_naissance))
 
-    def create_player(self):
+    def create_player(self, text):
         '''Demande les coordonnées d'un joueur'''
-        self.underline_title_and_cls("Ajout d'un Joueur")
-        nom = input("Nom du joueur : ")
-        prenom = input("Prénom du joueur : ")
-        date_de_naissance = input("Date de naissance du joueur : ")
+        self.underline_title_and_cls(text)
+        first_name = input("Prénom du joueur : ")
+        last_name = input("Nom du joueur : ")
+        birthday = input("Date de naissance du joueur : ")
 
-        return nom, prenom, date_de_naissance
+        return first_name, last_name, birthday
 
     def create_tournament(self):
         '''Demande les donnees pour la création d'un tournoi'''
         self.underline_title_and_cls("Création et lancement d'un Tournoi")
         name = input("Nom du Tournoi : ")
         location = input("Lieu du Tournoi : ")
-        rounds = input("Nombre de Tours : ")
         description = input("Description : ")
+        nb_rounds = input("Nombre de Tours : ")
 
-        return name, location, rounds, description
+        return name, location, description, nb_rounds
+    
+    def ask_question(self, text):
+        """pose une question avec le texte en argument"""
+        print("\n" + text, end="")
+        choice = input("o/n ? : ").lower()
+        if choice == "n":
+            return False
+        return True
 
     def invalid_choice(self):
         '''affiche choix invalide'''
         print("\nChoix invalide. Veuillez réessayer.\n")
 
     def prompt_wait_enter(self):
-        '''Pause de l'affichage, Attente de la touche Entréé'''
+        '''Pause de l'affichage, Attente de la touche Entrée'''
         print()
         input("Appuyer sur Entrée pour revenir au menu")
         return True
@@ -57,6 +65,9 @@ class View:
         souligne = '-'*len(title) + '\n'
         print('\n' + title)
         print(souligne)
+
+    def print_something(self, text):
+        print(text)
 
 
 if __name__ == "__main__":
