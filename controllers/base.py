@@ -13,7 +13,7 @@ class Controller:
             title = "Menu Principal"
             choice = self.view.display_menu(title, menu_list)
             if choice == "4":
-                print("\nAu revoir!\n")
+                self.view.print_something("\nAu revoir!\n")
                 break
             elif choice == "1":
                 self.tournaments_menu()
@@ -50,10 +50,10 @@ class Controller:
             if new_player.last_name == "":
                 break
             tournament.players_list.append(new_player.to_json())
-            new_player.save_player()
+            self.view.print_something(new_player.save_player())
             index += 1
         # sauvegarde du tournoi
-        tournament.save_tournament()
+        self.view.print_something(tournament.save_tournament())
         if self.view.ask_question("Voulez-vous démarrer le tournoi "):
             self.start_tournament(tournament)
     
@@ -82,13 +82,13 @@ class Controller:
                 player = self.view.create_player("Ajout d'un Joueur dans la base de données ( data/players/players.json)")
                 if player[0] != '' and player[1] != '':
                     player_instance = Player(player[0], player[1], player[2])
-                    player_instance.save_player()
+                    self.view.print_something(player_instance.save_player())
                 self.view.prompt_wait_enter()
             elif choice == "3":
                 # supprime un joueur
                 player = self.view.create_player("Suppression d'un Joueur dans la base de données ( data/players/players.json)")
                 player_instance = Player(player[0], player[1], player[2])
-                player_instance.delete_player()
+                self.view.print_something(player_instance.delete_player())
                 self.view.prompt_wait_enter()
             elif choice == "4":
                 break

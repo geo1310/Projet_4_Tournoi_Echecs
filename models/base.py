@@ -50,9 +50,9 @@ class Player:
             with open(FULL_PATH_PLAYERS, "w") as fichier:
                 json.dump(players_list, fichier)
 
-            print("\nLe nouveau joueur a été ajouté à", FILE_PLAYERS)
+            return f"\nLe nouveau joueur a été ajouté à {FILE_PLAYERS}"
         else:
-            print("\nLe joueur est deja enregistré !!!")
+            return "\nLe joueur est deja enregistré !!!"
 
     def delete_player(self):
         players_list = DataList(FULL_PATH_PLAYERS)
@@ -69,9 +69,9 @@ class Player:
             with open(FULL_PATH_PLAYERS, "w") as fichier:
                 json.dump(players_list, fichier)
 
-            print("\nLe joueur a été supprimé de", FULL_PATH_PLAYERS)
+            return f"\nLe joueur a été supprimé de {FULL_PATH_PLAYERS}"
         else:
-            print("\nLe joueur n'est pas dans la liste !!!")
+            return "\nLe joueur n'est pas dans la liste !!!"
 
 
 class Match:
@@ -108,7 +108,7 @@ class Tournament:
         self.status = status
 
     def __str__(self):
-        return f"Tournoi {self.name} du {self.start_date} au {self.end_date}"
+        return f"Tournoi {self.name}.{self.location} du {self.start_date} au {self.end_date}"
     
     def to_json(self):
         # Crée un dictionnaire avec les données du joueur pour enregistrement fichier json
@@ -161,7 +161,7 @@ class Tournament:
         # Enregistrez la liste mise à jour dans le fichier JSON
         with open(FULL_PATH_TOURNAMENTS, "w") as fichier:
             json.dump(tournaments_list, fichier)
-        print("\nLe tournoi a été enregistré avec succes !!!")    
+        return "\nLe tournoi a été enregistré avec succes !!!"    
 
 class DataList(list):
     # crée une liste d'apres un fichier json et peut la mélanger
