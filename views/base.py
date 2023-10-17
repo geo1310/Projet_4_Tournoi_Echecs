@@ -16,18 +16,22 @@ class View:
         '''Affiche la liste des joueurs à partir d'une liste par ordre alphabétique (nom)'''
         self.underline_title_and_cls("Liste des Joueurs")
         sorted_players_list = sorted(players_list, key=lambda x: x["last_name"])
+        index = 1
         for player in sorted_players_list:
             nom = player['last_name']
             prenom = player['first_name']
             date_naissance = player['birthday']
-            print("Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15}".format(nom, prenom, date_naissance))
+            print("{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15}".format(index, nom, prenom, date_naissance))
+            index += 1
 
     def print_tournaments_list(self, tournaments_list):
         '''Affiche la liste des tournois à partir d'une liste'''
         self.underline_title_and_cls("Liste des Tournois")
+        index = 1
         for tournament in tournaments_list:
-            print("Nom : {:<15} Lieu : {:<15} Date de début : {:<15} Date de fin : {:<15}\n".format(tournament['name'], tournament['location'], tournament['start_date'], tournament['end_date']))
-        
+            print("{:<2} - Nom : {:<15} Lieu : {:<15} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['start_date'], tournament['end_date']))
+            index += 1
+    
     def create_player(self, text):
         '''Demande les coordonnées d'un joueur'''
         self.underline_title_and_cls(text)
@@ -48,12 +52,16 @@ class View:
         return name, location, description, nb_rounds
     
     def ask_question(self, text):
-        """pose une question avec le texte en argument"""
+        """pose une question avec le texte en argument - reponse oui ou non"""
         print("\n" + text, end="")
         choice = input("o/n ? : ").lower()
-        if choice == "n":
-            return False
-        return True
+        if choice == "o":
+            return True
+        return False
+
+    def return_choice(self, text):
+        answer = input(text)
+        return answer
 
     def invalid_choice(self):
         '''affiche choix invalide'''

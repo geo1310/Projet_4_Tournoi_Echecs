@@ -75,13 +75,13 @@ class Player:
 
 
 class Match:
+
     def __init__(self, player_score1, player_score2):
         self.player_score1 = player_score1
         self.player_score2 = player_score2
 
     def __str__(self):
         return f"{self.player_score1} - {self.player_score2}"
-
 
 class Round:
     def __init__(self, number, player_score1, player_score2):
@@ -94,18 +94,22 @@ class Round:
 
 
 class Tournament:
-    def __init__(self, name, location, description, nb_rounds=4, players_list=None, rounds_list=None, act_round=1, start_date='', end_date='', status='new'):
+    def __init__(self, name, location, description, nb_rounds=4, players_list=None, rounds_list=None, act_round=1, start_date='', end_date='', finished=False):
         self.national_id = NATIONAL_ID
         self.name = name
         self.location = location
         self.description = description
-        self.nb_rounds = nb_rounds
+        if nb_rounds == '':
+            self.nb_rounds = 4
+        else:
+            self.nb_rounds = int(nb_rounds)
+
         self.players_list = players_list if players_list is not None else []
         self.rounds_list = rounds_list if rounds_list is not None else []
         self.act_round = act_round
         self.start_date = start_date
         self.end_date = end_date
-        self.status = status
+        self.finished = finished
 
     def __str__(self):
         return f"Tournoi {self.name}.{self.location} du {self.start_date} au {self.end_date}"
@@ -123,7 +127,7 @@ class Tournament:
             "act_round": self.act_round,
             "start_date": self.start_date,
             "end_date": self.end_date,
-            "status": self.status
+            "status": self.finished
         }
 
     def save_tournament(self):
@@ -141,7 +145,7 @@ class Tournament:
                 "act_round": self.act_round,
                 "start_date": self.start_date,
                 "end_date": self.end_date,
-                "status": self.status,
+                "finished": self.finished,
             })
         else:
             tournament = {
@@ -155,7 +159,7 @@ class Tournament:
                 "act_round": self.act_round,
                 "start_date": self.start_date,
                 "end_date": self.end_date,
-                "status": self.status,
+                "finished": self.finished,
             }
             tournaments_list.append(tournament)
         # Enregistrez la liste mise à jour dans le fichier JSON

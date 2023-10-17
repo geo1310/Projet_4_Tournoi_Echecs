@@ -1,3 +1,4 @@
+import datetime
 from models.base import Player, DataList, Tournament, FULL_PATH_TOURNAMENTS, FULL_PATH_PLAYERS
 
 
@@ -58,11 +59,34 @@ class Controller:
             self.start_tournament(tournament)
     
     def continue_tournament(self):
-        pass
+        # choix d'un tournoi à commencer parmis les tournois non finis
+        tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
+        tournaments_list_not_finished = []
+        for tournament in tournaments_list:
+            if not tournament['finished']:
+                tournaments_list_not_finished.append(tournament)
+        if tournaments_list_not_finished != []:
+            self.view.underline_title_and_cls("Quel tournoi voulez-vous commencer :")
+            self.view.print_tournaments_list(tournaments_list_not_finished)
+            choice = self.view.return_choice("Entrer le Numéro de tournoi que vous souhaiter lancer : ")
+            try:
+                choice = int(choice)
+                new_tournement = tournaments_list_not_finished[choice-1]
+                del new_tournement['national_id']
+                tournament = Tournament(**new_tournement)
+                self.start_tournament(tournament)
+            except:
+                self.view.print_something("\nChoix invalide !!!")
+                self.view.prompt_wait_enter()
+        else:
+            self.view.print_something("\nAucun Tournoi à continuer !!!")
+            self.view.prompt_wait_enter()
+
 
     def start_tournament(self, tournament):
+        date = datetime.date.today().strftime("%d/%m/%Y")
         # déroulement d'un tournoi
-        print(tournament.name + tournament.location)
+        self.view.underline_title_and_cls(f"{date} - Tournoi : {tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds")
         self.view.prompt_wait_enter()
 
     def players_menu(self):
