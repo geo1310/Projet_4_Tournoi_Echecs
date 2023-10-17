@@ -13,19 +13,26 @@ class View:
         return choice
    
     def print_players_list(self, players_list):
-        '''Affiche la liste des joueurs à partir d'une liste'''
+        '''Affiche la liste des joueurs à partir d'une liste par ordre alphabétique (nom)'''
         self.underline_title_and_cls("Liste des Joueurs")
-        for player in players_list:
-            nom = player['first_name']
-            prenom = player['last_name']
+        sorted_players_list = sorted(players_list, key=lambda x: x["last_name"])
+        for player in sorted_players_list:
+            nom = player['last_name']
+            prenom = player['first_name']
             date_naissance = player['birthday']
             print("Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15}".format(nom, prenom, date_naissance))
 
+    def print_tournaments_list(self, tournaments_list):
+        '''Affiche la liste des tournois à partir d'une liste'''
+        self.underline_title_and_cls("Liste des Tournois")
+        for tournament in tournaments_list:
+            print("Nom : {:<15} Lieu : {:<15} Date de début : {:<15} Date de fin : {:<15}".format(tournament['name'], tournament['location'], tournament['start_date'], tournament['end_date']))
+        
     def create_player(self, text):
         '''Demande les coordonnées d'un joueur'''
         self.underline_title_and_cls(text)
-        first_name = input("Prénom du joueur : ")
         last_name = input("Nom du joueur : ")
+        first_name = input("Prénom du joueur : ")
         birthday = input("Date de naissance du joueur : ")
 
         return first_name, last_name, birthday

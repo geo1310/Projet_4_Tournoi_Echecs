@@ -1,4 +1,4 @@
-from models.base import Player, DataList, Tournament
+from models.base import Player, DataList, Tournament, FULL_PATH_TOURNAMENTS, FULL_PATH_PLAYERS
 
 
 class Controller:
@@ -33,7 +33,7 @@ class Controller:
             if choice == "1":
                 self.create_tournament()
             elif choice == "2":
-                # continuer un tournoi en cours
+                # continuer un tournoi deja commencé
                 self.continue_tournament()
             elif choice == "3":
                 break
@@ -73,14 +73,14 @@ class Controller:
             choice = self.view.display_menu(title, menu_list)
             if choice == "1":
                 # affiche la liste des joueurs
-                players_list = DataList('players/players.json')
+                players_list = DataList(FULL_PATH_PLAYERS)
                 self.view.print_players_list(players_list)
                 self.view.prompt_wait_enter()
                 
             elif choice == "2":
                 # ajoute un joueur
                 player = self.view.create_player("Ajout d'un Joueur dans la base de données ( data/players/players.json)")
-                if player[0] != '' or player[1] != '':
+                if player[0] != '' and player[1] != '':
                     player_instance = Player(player[0], player[1], player[2])
                     player_instance.save_player()
                 self.view.prompt_wait_enter()
@@ -102,12 +102,15 @@ class Controller:
             title = "Menu Rapports"
             choice = self.view.display_menu(title, menu_list)
             if choice == "1":
-                # ----- affiche la liste des joueurs -----
-                players_list = DataList('players/players.json')
+                # affiche la liste des joueurs
+                players_list = DataList(FULL_PATH_PLAYERS)
                 self.view.print_players_list(players_list)
                 self.view.prompt_wait_enter()
             elif choice == "2":
-                print("Liste des tournois")
+                # affiche la liste des tournois
+                tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
+                self.view.print_tournaments_list(tournaments_list)
+                self.view.prompt_wait_enter()
             elif choice == "3":
                 print("Nom et Date d'un tournoi")
             elif choice == "4":
