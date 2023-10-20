@@ -29,7 +29,7 @@ class View:
         self.underline_title_and_cls("Liste des Tournois")
         index = 1
         for tournament in tournaments_list:
-            print("{:<2} - Nom : {:<15} Lieu : {:<15} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['start_date'], tournament['end_date']))
+            print("{:<2} - Nom : {:<15} Lieu : {:<15} Nb de Tours : {:<15} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['start_date'], tournament['end_date']))
             index += 1
     
     def create_player(self, text):

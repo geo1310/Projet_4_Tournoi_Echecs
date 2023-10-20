@@ -99,11 +99,13 @@ class Tournament:
         self.name = name
         self.location = location
         self.description = description
-        if nb_rounds == '':
-            self.nb_rounds = 4
+        if not isinstance(nb_rounds, int):
+            if nb_rounds.isdigit():
+                self.nb_rounds = int(nb_rounds)
+            else:
+                self.nb_rounds = 4
         else:
-            self.nb_rounds = int(nb_rounds)
-
+            self.nb_rounds = nb_rounds
         self.players_list = players_list if players_list is not None else []
         self.rounds_list = rounds_list if rounds_list is not None else []
         self.act_round = act_round

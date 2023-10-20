@@ -25,22 +25,99 @@ class Controller:
             else:
                 self.view.invalid_choice()
 
+    '''
+    Gestion des Menus
+    
+    '''
     def tournaments_menu(self):
         while True:
             # menu tournois
-            menu_list = ["Créer/Lancer un Tournoi", "Continuer un tournoi en cours", "Retour au menu principal"]
+            menu_list = ["Afficher la liste des Tournois", "Créer/Lancer un Tournoi", "Continuer un tournoi en cours", "Retour au menu principal"]
             title = "Menu Tournois"
             choice = self.view.display_menu(title, menu_list)
             if choice == "1":
-                self.create_tournament()
+                self.tournaments_list()
             elif choice == "2":
-                # continuer un tournoi deja commencé
-                self.continue_tournament()
+                self.create_tournament()
             elif choice == "3":
+                self.continue_tournament()
+            elif choice == '4':
                 break
             else:
                 self.view.invalid_choice()
     
+    def players_menu(self):
+        while True:
+            # menu joueurs
+            menu_list = ["Afficher la liste des joueurs", "Ajouter un joueur", "Supprimer un joueur", "Retour au menu principal"]
+            title = "Menu Joueurs"
+            choice = self.view.display_menu(title, menu_list)
+            if choice == "1":
+                self.players_list()
+            elif choice == "2":
+                self.add_player()
+            elif choice == "3":
+                self.del_player()
+            elif choice == "4":
+                break
+            else:
+                self.view.invalid_choice()
+
+    def rapports_menu(self):
+        while True:
+            # menu rapports
+            menu_list = ["Afficher la liste des joueurs", "Liste des tournois", "Liste des Joueurs d'un tournoi", "Liste des Tours et matchs d'un tournoi", "Retour au menu principal"]
+            title = "Menu Rapports"
+            choice = self.view.display_menu(title, menu_list)
+            if choice == "1":
+                self.players_list()
+            elif choice == "2":
+                self.tournaments_list()
+            elif choice == "3":
+                self.players_tournament()
+            elif choice == "4":
+                self.rounds_matches_tournament()
+            elif choice == "5":
+                break
+            else:
+                self.view.invalid_choice()
+
+    '''
+    Gestion des Joueurs
+
+    '''
+    def players_list(self):
+        # affiche la liste des joueurs
+        players_list = DataList(FULL_PATH_PLAYERS)
+        self.view.print_players_list(players_list)
+        self.view.prompt_wait_enter()
+
+    def add_player(self):
+        # ajoute un joueur
+        player = self.view.create_player("Ajout d'un Joueur dans la base de données ( data/players/players.json)")
+        if player[0] != '' and player[1] != '':
+            player_instance = Player(player[0], player[1], player[2])
+            self.view.print_something(player_instance.save_player())
+        self.view.prompt_wait_enter()
+
+    def del_player(self):
+        # supprime un joueur
+        player = self.view.create_player("Suppression d'un Joueur dans la base de données ( data/players/players.json)")
+        player_instance = Player(player[0], player[1], player[2])
+        self.view.print_something(player_instance.delete_player())
+        self.view.prompt_wait_enter()
+
+    '''
+        Gestion des Tournois
+   
+    '''
+
+    def tournaments_list(self):
+        # affiche la liste des tournois
+        tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
+        self.view.print_tournaments_list(tournaments_list)
+        self.view.prompt_wait_enter()
+
     def create_tournament(self):
         # création d'un tournoi
         tournament = Tournament(*self.view.create_tournament())
@@ -66,7 +143,7 @@ class Controller:
             if not tournament['finished']:
                 tournaments_list_not_finished.append(tournament)
         if tournaments_list_not_finished != []:
-            self.view.underline_title_and_cls("Quel tournoi voulez-vous commencer :")
+            self.view.underline_title_and_cls("Liste des Tournois à effectuer :")
             self.view.print_tournaments_list(tournaments_list_not_finished)
             choice = self.view.return_choice("Entrer le Numéro de tournoi que vous souhaiter lancer : ")
             try:
@@ -75,13 +152,13 @@ class Controller:
                 del new_tournement['national_id']
                 tournament = Tournament(**new_tournement)
                 self.start_tournament(tournament)
-            except:
+            except Exception as e:
                 self.view.print_something("\nChoix invalide !!!")
+                print(f"{str(e)}")
                 self.view.prompt_wait_enter()
         else:
             self.view.print_something("\nAucun Tournoi à continuer !!!")
             self.view.prompt_wait_enter()
-
 
     def start_tournament(self, tournament):
         date = datetime.date.today().strftime("%d/%m/%Y")
@@ -89,61 +166,15 @@ class Controller:
         self.view.underline_title_and_cls(f"{date} - Tournoi : {tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds")
         self.view.prompt_wait_enter()
 
-    def players_menu(self):
-        while True:
-            # menu joueurs
-            menu_list = ["Afficher la liste des joueurs", "Ajouter un joueur", "Supprimer un joueur", "Retour au menu principal"]
-            title = "Menu Joueurs"
-            choice = self.view.display_menu(title, menu_list)
-            if choice == "1":
-                # affiche la liste des joueurs
-                players_list = DataList(FULL_PATH_PLAYERS)
-                self.view.print_players_list(players_list)
-                self.view.prompt_wait_enter()
-                
-            elif choice == "2":
-                # ajoute un joueur
-                player = self.view.create_player("Ajout d'un Joueur dans la base de données ( data/players/players.json)")
-                if player[0] != '' and player[1] != '':
-                    player_instance = Player(player[0], player[1], player[2])
-                    self.view.print_something(player_instance.save_player())
-                self.view.prompt_wait_enter()
-            elif choice == "3":
-                # supprime un joueur
-                player = self.view.create_player("Suppression d'un Joueur dans la base de données ( data/players/players.json)")
-                player_instance = Player(player[0], player[1], player[2])
-                self.view.print_something(player_instance.delete_player())
-                self.view.prompt_wait_enter()
-            elif choice == "4":
-                break
-            else:
-                self.view.invalid_choice()
-
-    def rapports_menu(self):
-        while True:
-            # menu rapports
-            menu_list = ["Afficher la liste des joueurs", "Liste des tournois", "Nom et Date d'un tournoi", "Liste des Joueurs d'un tournoi", "Liste des Tours et matchs d'un tournoi", "Retour au menu principal"]
-            title = "Menu Rapports"
-            choice = self.view.display_menu(title, menu_list)
-            if choice == "1":
-                # affiche la liste des joueurs
-                players_list = DataList(FULL_PATH_PLAYERS)
-                self.view.print_players_list(players_list)
-                self.view.prompt_wait_enter()
-            elif choice == "2":
-                # affiche la liste des tournois
-                tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
-                self.view.print_tournaments_list(tournaments_list)
-                self.view.prompt_wait_enter()
-            elif choice == "3":
-                print("Nom et Date d'un tournoi")
-            elif choice == "4":
-                print("Liste des Joueurs d'un tournoi")
-            elif choice == "5":
-                print("Liste des Tours et matchs d'un tournoi")
-            elif choice == "6":
-                break
-            else:
-                self.view.invalid_choice()
-
+    '''
+    Gestion des Rapports
     
+    '''
+
+    def players_tournament(self):
+        print("Liste des Joueurs d'un tournoi")
+        self.view.prompt_wait_enter()
+
+    def rounds_matches_tournament(self):
+        print("Liste des Tours et matchs d'un tournoi")
+        self.view.prompt_wait_enter()
