@@ -1,3 +1,4 @@
+import sys
 import datetime
 from models.base import Player, DataList, Tournament, FULL_PATH_TOURNAMENTS, FULL_PATH_PLAYERS
 
@@ -8,79 +9,78 @@ class Controller:
         self.view = view
 
     def run(self):
-        while True:
-            # menu principal
-            menu_list = ["Tournois", "Rapports", "Joueurs", "Quitter"]
-            title = "Menu Principal"
-            choice = self.view.display_menu(title, menu_list)
-            if choice == "4":
-                self.view.print_something("\nAu revoir!\n")
-                break
-            elif choice == "1":
-                self.tournaments_menu()
-            elif choice == "2":
-                self.rapports_menu()
-            elif choice == "3":
-                self.players_menu()
-            else:
-                self.view.invalid_choice()
-
+        # menu principal
+        menu_items = ["Menu principal", {
+            "Tournois": self.tournaments_menu,
+            "Rapports": self.rapports_menu,
+            "Joueurs": self.players_menu,
+            "Quitter": self.quit_menu
+        }]
+        self.run_menu(menu_items)
+        
     '''
     Gestion des Menus
     
     '''
     def tournaments_menu(self):
-        while True:
-            # menu tournois
-            menu_list = ["Afficher la liste des Tournois", "Créer/Lancer un Tournoi", "Continuer un tournoi en cours", "Retour au menu principal"]
-            title = "Menu Tournois"
-            choice = self.view.display_menu(title, menu_list)
-            if choice == "1":
-                self.tournaments_list()
-            elif choice == "2":
-                self.create_tournament()
-            elif choice == "3":
-                self.continue_tournament()
-            elif choice == '4':
-                break
-            else:
-                self.view.invalid_choice()
+        # menu tournois
+        menu_items = ["Menu Tournois", {
+            "Afficher la liste des Tournois": self.tournaments_list,
+            "Créer/Lancer un Tournoi": self.create_tournament,
+            "Continuer un tournoi en cours": self.continue_tournament,
+            "Retour au menu principal": self.run
+        }]
+        self.run_menu(menu_items)
     
     def players_menu(self):
-        while True:
-            # menu joueurs
-            menu_list = ["Afficher la liste des joueurs", "Ajouter un joueur", "Supprimer un joueur", "Retour au menu principal"]
-            title = "Menu Joueurs"
-            choice = self.view.display_menu(title, menu_list)
-            if choice == "1":
-                self.players_list()
-            elif choice == "2":
-                self.add_player()
-            elif choice == "3":
-                self.del_player()
-            elif choice == "4":
-                break
-            else:
-                self.view.invalid_choice()
+        # menu joueurs
+        menu_items = ["Menu Joueurs", {
+            "Afficher la liste des Joueurs": self.players_list,
+            "Ajouter un Joueur": self.add_player,
+            "Supprimer un Joueur ": self.del_player,
+            "Retour au menu principal": self.run
+        }]
+        self.run_menu(menu_items)
 
     def rapports_menu(self):
-        while True:
-            # menu rapports
-            menu_list = ["Afficher la liste des joueurs", "Liste des tournois", "Liste des Joueurs d'un tournoi", "Liste des Tours et matchs d'un tournoi", "Retour au menu principal"]
-            title = "Menu Rapports"
+        # menu rapports
+        menu_items = ["Menu Rapports", {
+            "Afficher la liste des Joueurs": self.players_list,
+            "Liste des Tournois": self.tournaments_list,
+            "Liste des Joueurs d'un Tournoi ": self.players_tournament,
+            "Liste des Tours et Matchs d'un Tournoi ": self.rounds_matches_tournament,
+            "Retour au menu principal": self.run
+        }]
+        self.run_menu(menu_items)
+
+    def run_menu(self, menu_items):
+        ''' gestion de l'affichage du menu et du choix utilisateur par rapport à menu_items'''
+        title = menu_items[0]
+        menu_list = []
+        menu_boucle = True
+        index = 1
+        for menu in menu_items[1]:
+            menu_list.append((index, menu))
+            index += 1
+
+        while menu_boucle:
             choice = self.view.display_menu(title, menu_list)
-            if choice == "1":
-                self.players_list()
-            elif choice == "2":
-                self.tournaments_list()
-            elif choice == "3":
-                self.players_tournament()
-            elif choice == "4":
-                self.rounds_matches_tournament()
-            elif choice == "5":
-                break
+            # analyse du choix utilisateur
+            if choice.isdigit():
+                choice = int(choice)
+                for menu in menu_list:
+                    if menu[0] == choice:
+                        if menu_items[1][menu[1]]() is False:
+                            menu_boucle = False
+                            break
             else:
                 self.view.invalid_choice()
+                self.view.prompt_wait_enter()
+            
+    def quit_menu(self):
+        self.view.print_something("\nAu Revoir !!!\n")
+        sys.exit()
+        return False
 
     '''
     Gestion des Joueurs

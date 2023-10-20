@@ -4,11 +4,11 @@ import os
 class View:
 
     def display_menu(self, title, menu_list):
-        '''Affiche le menu d'apres un titre et une liste de menus'''
+        '''Affiche le menu d'apres un titre et une liste de menus et renvoie le choix'''
         self.underline_title_and_cls(title)
         # affichage du menu
-        for i in range(len(menu_list)):
-            print(f"\t{i+1} - {menu_list[i]}")
+        for menu in menu_list:
+            print(f"\t{menu[0]} - {menu[1]}")
         choice = input("\nchoix :")
         return choice
    
