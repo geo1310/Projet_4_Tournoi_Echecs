@@ -79,31 +79,31 @@ class Match:
     MATCH_WIN = 1
     MATCH_NUL = 0.5
 
-    def __init__(self, player_score1, player_score2, finished=False):
-        self.player_score1 = player_score1
-        self.player_score2 = player_score2
+    def __init__(self, player_1, player_2, finished=False):
+        self.player_1 = player_1
+        self.player_2 = player_2
         self.finished = finished
 
     def __str__(self):
-        return f"{self.player_score1} - {self.player_score2}"
+        return f"{self.player_1} - {self.player_2}"
     
     def to_json(self):
         return {
-            'player_1': self.player_score1,
-            'player_2': self.player_score2,
+            'player_1': self.player_1,
+            'player_2': self.player_2,
             'finished': self.finished
         }
     
     def result(self, number):
         if number == 1:
-            self.player_score1[1] = Match.MATCH_WIN
-            self.player_score2[1] = 0
+            self.player_1[1] = Match.MATCH_WIN
+            self.player_2[1] = 0
         elif number == 2:
-            self.player_sore1[1] = 0
-            self.player_score2[1] = Match.MATCH_WIN
+            self.player_1[1] = 0
+            self.player_2[1] = Match.MATCH_WIN
         else:
-            self.player_sore1[1] = Match.MATCH_NUL
-            self.player_score2[1] = Match.MATCH_NUL
+            self.player_1[1] = Match.MATCH_NUL
+            self.player_2[1] = Match.MATCH_NUL
         self.finished = True
 
 
@@ -120,7 +120,7 @@ class Round:
     def to_json(self):
         return {
             'number': self.number,
-            'match_list': self.matchs_list,
+            'matchs_list': self.matchs_list,
             'finished': self.finished
         }
 
