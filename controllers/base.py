@@ -1,7 +1,7 @@
 import sys
 import random
 import datetime
-from models.base import Player, DataList, Tournament, Round, Match, FULL_PATH_TOURNAMENTS, FULL_PATH_PLAYERS
+from models.base import Player, DataList, Tournament, Round, Match, FULL_PATH_TOURNAMENTS, FULL_PATH_PLAYERS, NATIONAL_ID
 
 
 class Controller:
@@ -11,9 +11,9 @@ class Controller:
 
     def run(self):
         # menu principal
-        menu_items = ["Menu principal", {
+        menu_items = [f"Menu principal du Club d'echecs {NATIONAL_ID} ", {
             "Tournois": self.tournaments_menu,
-            "Rapports": self.rapports_menu,
+            "Rapports": self.rapports_menu, 
             "Joueurs": self.players_menu,
             "Quitter": self.quit_menu
         }]
@@ -99,6 +99,8 @@ class Controller:
         if player[0] != '' and player[1] != '':
             player_instance = Player(player[0], player[1], player[2])
             self.view.print_something(player_instance.save_player())
+        else:
+            self.view.print_something("\nVeuillez renseigner au minimum le nom et le prénom du joueur.")
         self.view.prompt_wait_enter()
 
     def del_player(self):
@@ -169,7 +171,7 @@ class Controller:
     def start_tournament(self, tournament):
         players_list = tournament.players_list
         date = datetime.date.today().strftime("%d/%m/%Y")
-        # déroulement d'un tournoi
+        # lancement début d'un tournoi
         # ajoute date de début et le round 1 si tournoi pas deja commencé
         if tournament.start_date == "":
             tournament.start_date = date
@@ -189,14 +191,14 @@ class Controller:
                     index += 2
             tournament.rounds_list.append(round.to_json())
             tournament.save_tournament()
+        self.view.underline_title_and_cls(f"Tournoi : {tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds , commencé le {tournament.start_date}")
+        self.run_tournament(tournament)
 
-        self.view.underline_title_and_cls(f"{date} - Tournoi : {tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds")
-        print("Nom du tournoi : " + tournament.name)
-        print("Date de début : " + tournament.start_date)
-        print("Round en cours : " + str(tournament.act_round))
-        print(round)
-        self.view.prompt_wait_enter()
-            
+    def run_tournament(self,tournament):
+        print('tournoi en cours ...')
+        self.view.prompt_wait_enter() 
+
+
     '''
     Gestion des Rapports
     
