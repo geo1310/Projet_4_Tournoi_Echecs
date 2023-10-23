@@ -70,7 +70,7 @@ class View:
     def prompt_wait_enter(self):
         '''Pause de l'affichage, Attente de la touche Entrée'''
         print()
-        input("Appuyer sur Entrée pour revenir au menu")
+        input("Appuyer sur Entrée")
         return True
     
     def underline_title_and_cls(self, title):

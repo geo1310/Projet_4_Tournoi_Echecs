@@ -1,6 +1,7 @@
 import sys
+import random
 import datetime
-from models.base import Player, DataList, Tournament, FULL_PATH_TOURNAMENTS, FULL_PATH_PLAYERS
+from models.base import Player, DataList, Tournament, Round, Match, FULL_PATH_TOURNAMENTS, FULL_PATH_PLAYERS
 
 
 class Controller:
@@ -125,11 +126,16 @@ class Controller:
         index = 1
         while True:
             new_player = Player(*self.view.create_player(f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location}. "))
-            if new_player.last_name == "":
+            if new_player.last_name != "" and new_player.first_name !="":
+                tournament.players_list.append(new_player.to_json())
+                self.view.print_something(new_player.save_player())
+                index += 1
+            elif len(tournament.players_list) % 2 == 0 and len(tournament.players_list) != 0:
                 break
-            tournament.players_list.append(new_player.to_json())
-            self.view.print_something(new_player.save_player())
-            index += 1
+            else:
+                self.view.print_something("\nLe nombre de joueurs d'un tournoi doit etre pair et au moins de deux joueurs !!!")
+                self.view.prompt_wait_enter()
+
         # sauvegarde du tournoi
         self.view.print_something(tournament.save_tournament())
         if self.view.ask_question("Voulez-vous démarrer le tournoi "):
@@ -152,20 +158,45 @@ class Controller:
                 del new_tournement['national_id']
                 tournament = Tournament(**new_tournement)
                 self.start_tournament(tournament)
-            except Exception as e:
+            except Exception:
                 self.view.print_something("\nChoix invalide !!!")
-                print(f"{str(e)}")
+                # print(f"{str(e)}")
                 self.view.prompt_wait_enter()
         else:
             self.view.print_something("\nAucun Tournoi à continuer !!!")
             self.view.prompt_wait_enter()
 
     def start_tournament(self, tournament):
+        players_list = tournament.players_list
         date = datetime.date.today().strftime("%d/%m/%Y")
         # déroulement d'un tournoi
-        self.view.underline_title_and_cls(f"{date} - Tournoi : {tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds")
-        self.view.prompt_wait_enter()
+        # ajoute date de début et le round 1 si tournoi pas deja commencé
+        if tournament.start_date == "":
+            tournament.start_date = date
+            # creation du round 1
+            round = Round(1)
+            # creation de la liste des matchs
+            random.shuffle(players_list)
+            index = 0
+            while True:
+                try:
+                    match = Match([players_list[index], 0], [players_list[index+1], 0])
+                    round.matchs_list.append(match.to_json())
+                except Exception:
+                    print()
+                    break
+                else:
+                    index += 2
+            tournament.rounds_list.append(round.to_json())
+            tournament.save_tournament()
 
+        self.view.underline_title_and_cls(f"{date} - Tournoi : {tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds")
+        print("Nom du tournoi : " + tournament.name)
+        print("Date de début : " + tournament.start_date)
+        print("Round en cours : " + str(tournament.act_round))
+        print(round)
+        self.view.prompt_wait_enter()
+            
     '''
     Gestion des Rapports
     

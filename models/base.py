@@ -18,8 +18,8 @@ if not os.path.exists(FOLDER_TOURNAMENTS):
 
 class Player:
     def __init__(self, first_name, last_name, birthday='00/00/0000', score=0):
-        self.last_name = last_name
-        self.first_name = first_name
+        self.last_name = last_name.capitalize()
+        self.first_name = first_name.capitalize()
         self.birthday = birthday
         self.score = score
 
@@ -76,28 +76,44 @@ class Player:
 
 class Match:
 
-    def __init__(self, player_score1, player_score2):
+    def __init__(self, player_score1, player_score2, finished=False):
         self.player_score1 = player_score1
         self.player_score2 = player_score2
+        self.finished = finished
 
     def __str__(self):
         return f"{self.player_score1} - {self.player_score2}"
+    
+    def to_json(self):
+        return {
+            'player_1': self.player_score1,
+            'player_2': self.player_score2,
+            'finished': self.finished
+        }
+
 
 class Round:
-    def __init__(self, number, player_score1, player_score2):
+    def __init__(self, number, matchs_list=None, finished=False):
         self.number = number
-        self.player_score1 = player_score1
-        self.player_score2 = player_score2
+        self.matchs_list = matchs_list if matchs_list is not None else []
+        self.finished = finished
 
     def __str__(self):
-        return f"{self.player_score1} - {self.player_score2}"
+        return f"{self.to_json()}"
+    
+    def to_json(self):
+        return {
+            'number': self.number,
+            'match_list': self.matchs_list,
+            'finished': self.finished
+        }
 
 
 class Tournament:
     def __init__(self, name, location, description, nb_rounds=4, players_list=None, rounds_list=None, act_round=1, start_date='', end_date='', finished=False):
         self.national_id = NATIONAL_ID
-        self.name = name
-        self.location = location
+        self.name = name.capitalize()
+        self.location = location.capitalize()
         self.description = description
         if not isinstance(nb_rounds, int):
             if nb_rounds.isdigit():
