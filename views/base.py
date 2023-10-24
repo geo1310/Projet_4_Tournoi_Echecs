@@ -12,7 +12,9 @@ class View:
         choice = input("\nchoix :")
         return choice
    
-    def print_players_list(self, players_list, title_complement=''):
+    """ Affichage concernant les joueurs """
+
+    def display_players_list(self, players_list, title_complement=''):
         '''Affiche la liste des joueurs à partir d'une liste par ordre alphabétique (nom)'''
         self.underline_title_and_cls("Liste des Joueurs : " + title_complement)
         sorted_players_list = sorted(players_list, key=lambda x: x["last_name"])
@@ -24,14 +26,6 @@ class View:
             print("{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15}".format(index, nom, prenom, date_naissance))
             index += 1
 
-    def print_tournaments_list(self, tournaments_list):
-        '''Affiche la liste des tournois à partir d'une liste'''
-        self.underline_title_and_cls("Liste des Tournois")
-        index = 1
-        for tournament in tournaments_list:
-            print("{:<2} - Nom : {:<15} Lieu : {:<15} Nb de Tours : {:<15} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['start_date'], tournament['end_date']))
-            index += 1
-    
     def create_player(self, text):
         '''Demande les coordonnées d'un joueur'''
         self.underline_title_and_cls(text)
@@ -40,6 +34,16 @@ class View:
         birthday = input("Date de naissance du joueur : ")
 
         return first_name, last_name, birthday
+
+    """ Affichage concernant les Tournois """
+
+    def display_tournaments_list(self, tournaments_list):
+        '''Affiche la liste des tournois à partir d'une liste'''
+        self.underline_title_and_cls("Liste des Tournois")
+        index = 1
+        for tournament in tournaments_list:
+            print("{:<2} - Nom : {:<15} Lieu : {:<15} Nb de Tours : {:<15} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['start_date'], tournament['end_date']))
+            index += 1
 
     def create_tournament(self):
         '''Demande les donnees pour la création d'un tournoi'''
@@ -51,6 +55,13 @@ class View:
 
         return name, location, description, nb_rounds
     
+    """ Affichage concernant les matchs """
+
+    def display_match(self, match):
+        print(f"\n\t Match : {match['player_1'][0]['last_name']} {match['player_1'][0]['first_name']} contre {match['player_2'][0]['last_name']} {match['player_2'][0]['first_name']}")
+    
+    """ Affichage divers """
+
     def ask_question(self, text):
         """pose une question avec le texte en argument - reponse oui ou non"""
         print("\n" + text, end="")
@@ -60,6 +71,7 @@ class View:
         return False
 
     def return_choice(self, text):
+        """ pose une question selon un texte et renvoie la réponse"""
         answer = input(text)
         return answer
 
@@ -81,7 +93,7 @@ class View:
         print('\n' + title)
         print(souligne)
 
-    def print_something(self, text):
+    def display_something(self, text):
         print(text)
 
 

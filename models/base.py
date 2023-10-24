@@ -97,13 +97,17 @@ class Match:
     def result(self, number):
         if number == 1:
             self.player_1[1] = Match.MATCH_WIN
+            self.player_1[0]['score'] += Match.MATCH_WIN
             self.player_2[1] = 0
         elif number == 2:
             self.player_1[1] = 0
             self.player_2[1] = Match.MATCH_WIN
+            self.player_2[0]['score'] += Match.MATCH_WIN
         else:
             self.player_1[1] = Match.MATCH_NUL
+            self.player_1[0]['score'] += Match.MATCH_NUL
             self.player_2[1] = Match.MATCH_NUL
+            self.player_2[0]['score'] += Match.MATCH_NUL
         self.finished = True
 
 

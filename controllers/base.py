@@ -79,7 +79,7 @@ class Controller:
                 self.view.prompt_wait_enter()
             
     def quit_menu(self):
-        self.view.print_something("\nAu Revoir !!!\n")
+        self.view.display_something("\nAu Revoir !!!\n")
         sys.exit()
         return False
 
@@ -90,7 +90,7 @@ class Controller:
     def players_list(self):
         # affiche la liste des joueurs
         players_list = DataList(FULL_PATH_PLAYERS)
-        self.view.print_players_list(players_list)
+        self.view.display_players_list(players_list)
         self.view.prompt_wait_enter()
 
     def add_player(self):
@@ -98,16 +98,16 @@ class Controller:
         player = self.view.create_player("Ajout d'un Joueur dans la base de données ( data/players/players.json)")
         if player[0] != '' and player[1] != '':
             player_instance = Player(player[0], player[1], player[2])
-            self.view.print_something(player_instance.save_player())
+            self.view.display_something(player_instance.save_player())
         else:
-            self.view.print_something("\nVeuillez renseigner au minimum le nom et le prénom du joueur.")
+            self.view.display_something("\nVeuillez renseigner au minimum le nom et le prénom du joueur.")
         self.view.prompt_wait_enter()
 
     def del_player(self):
         # supprime un joueur
         player = self.view.create_player("Suppression d'un Joueur dans la base de données ( players.json)")
         player_instance = Player(player[0], player[1], player[2])
-        self.view.print_something(player_instance.delete_player())
+        self.view.display_something(player_instance.delete_player())
         self.view.prompt_wait_enter()
 
     '''
@@ -118,7 +118,7 @@ class Controller:
     def tournaments_list(self):
         # affiche la liste des tournois
         tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
-        self.view.print_tournaments_list(tournaments_list)
+        self.view.display_tournaments_list(tournaments_list)
         self.view.prompt_wait_enter()
 
     def create_tournament(self):
@@ -130,16 +130,16 @@ class Controller:
             new_player = Player(*self.view.create_player(f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location}. "))
             if new_player.last_name != "" and new_player.first_name !="":
                 tournament.players_list.append(new_player.to_json())
-                self.view.print_something(new_player.save_player())
+                self.view.display_something(new_player.save_player())
                 index += 1
             elif len(tournament.players_list) % 2 == 0 and len(tournament.players_list) != 0:
                 break
             else:
-                self.view.print_something("\nLe nombre de joueurs d'un tournoi doit etre pair et au moins de deux joueurs !!!")
+                self.view.display_something("\nLe nombre de joueurs d'un tournoi doit etre pair et au moins de deux joueurs !!!")
                 self.view.prompt_wait_enter()
 
         # sauvegarde du tournoi
-        self.view.print_something(tournament.save_tournament())
+        self.view.display_something(tournament.save_tournament())
         if self.view.ask_question("Voulez-vous démarrer le tournoi "):
             self.start_tournament(tournament)
     
@@ -152,7 +152,7 @@ class Controller:
                 tournaments_list_not_finished.append(tournament)
         if tournaments_list_not_finished != []:
             self.view.underline_title_and_cls("Liste des Tournois à effectuer :")
-            self.view.print_tournaments_list(tournaments_list_not_finished)
+            self.view.display_tournaments_list(tournaments_list_not_finished)
             choice = self.view.return_choice("Entrer le Numéro de tournoi que vous souhaiter lancer : ")
             try:
                 choice = int(choice)
@@ -160,12 +160,11 @@ class Controller:
                 del tournament_choice['national_id']
                 new_tournament = Tournament(**tournament_choice)
                 self.start_tournament(new_tournament)
-            except Exception:
-                self.view.print_something("\nChoix invalide !!!")
-                # print(f"{str(e)}")
+            except Exception:  # as e --> print(f"{str(e)}")
+                self.view.display_something("\nChoix invalide !!!")
                 self.view.prompt_wait_enter()
         else:
-            self.view.print_something("\nAucun Tournoi à continuer !!!")
+            self.view.display_something("\nAucun Tournoi à continuer !!!")
             self.view.prompt_wait_enter()
 
     def start_tournament(self, tournament):
@@ -197,18 +196,24 @@ class Controller:
         self.run_tournament(tournament)
 
     def run_tournament(self, tournament):
+        """ Lance les rounds non finis d'un tournoi et éxécute les matchs non executés"""
         rounds_list = tournament.rounds_list
         for round_enum in rounds_list:
             act_round = Round(**round_enum)
             if act_round.finished is False:
-                self.view.print_something(f"Round : {act_round.number} : ")
-                for match_enum in act_round.matchs_list:
+                self.view.display_something(f"Round : {act_round.number} : ")
+                matchs_list = act_round.matchs_list
+                
+                for match_enum in matchs_list:
                     act_match = Match(**match_enum)
                     if act_match.finished is False:
-                        self.view.print_something(f"\n\tDéroulement du Match {act_match.player_1} contre {act_match.player_2}")
-                
-                self.view.prompt_wait_enter() 
+                        self.view.display_match(act_match.to_json())
+                        choice = self.view.return_choice("\t\nRésultat du match ( 1/n/2 ): ")
+                        act_match.result(int(choice))
+                        act_match.finished = True
+                        print(act_match)
 
+                self.view.prompt_wait_enter()
 
     '''
     Gestion des Rapports
@@ -219,7 +224,7 @@ class Controller:
         # affiche la liste des joueurs d'un tournoi
         tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
         self.view.underline_title_and_cls("Liste des Joueurs d'un Tournoi :")
-        self.view.print_tournaments_list(tournaments_list)
+        self.view.display_tournaments_list(tournaments_list)
         choice = self.view.return_choice("Entrer le Numéro de tournoi pour voir la liste des joueurs : ")
         try:
             choice = int(choice)
@@ -228,9 +233,9 @@ class Controller:
             tournament_name = tournament_choice['name']
             tournament_location = tournament_choice['location']
             title = f"{tournament_name} de {tournament_location}"
-            self.view.print_players_list(players_list, title)
+            self.view.display_players_list(players_list, title)
         except Exception:
-            self.view.print_something("\nChoix invalide !!!")
+            self.view.display_something("\nChoix invalide !!!")
         self.view.prompt_wait_enter()
 
     def rounds_matches_tournament(self):
