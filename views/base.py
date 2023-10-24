@@ -12,9 +12,9 @@ class View:
         choice = input("\nchoix :")
         return choice
    
-    def print_players_list(self, players_list):
+    def print_players_list(self, players_list, title_complement=''):
         '''Affiche la liste des joueurs à partir d'une liste par ordre alphabétique (nom)'''
-        self.underline_title_and_cls("Liste des Joueurs")
+        self.underline_title_and_cls("Liste des Joueurs : " + title_complement)
         sorted_players_list = sorted(players_list, key=lambda x: x["last_name"])
         index = 1
         for player in sorted_players_list:

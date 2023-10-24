@@ -217,5 +217,7 @@ class DataList(list):
 
 
 if __name__ == "__main__":
-    player = Player('test', 'test', 'test')
-    player.save_player()
+    os.system('cls')
+    act_round = {'number': 1, 'matchs_list': [{'player_1': [{'last_name': '2', 'first_name': '2', 'birthday': '', 'score': 0}, 0], 'player_2': [{'last_name': '4', 'first_name': '4', 'birthday': '', 'score': 0}, 0], 'finished': False}, {'player_1': [{'last_name': '3', 'first_name': '3', 'birthday': '', 'score': 0}, 0], 'player_2': [{'last_name': '1', 'first_name': '1', 'birthday': '', 'score': 0}, 0], 'finished': False}], 'finished': False}
+    round_1 = Round(**act_round)
+    print(round_1)
