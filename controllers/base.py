@@ -199,16 +199,17 @@ class Controller:
         """ Lance les rounds non finis d'un tournoi et éxécute les matchs non executés"""
         rounds_list = tournament.rounds_list
         for round_enum in rounds_list:
+            #print(round_enum)
             act_round = Round(**round_enum)
             if act_round.finished is False:
-                self.view.display_something(f"Round : {act_round.number} : ")
+                self.view.display_something(f"\nRound : {act_round.number} : ")
                 matchs_list = act_round.matchs_list
                 
                 for match_enum in matchs_list:
                     act_match = Match(**match_enum)
                     if act_match.finished is False:
                         self.view.display_match(act_match.to_json())
-                        choice = self.view.return_choice("\t\nRésultat du match ( 1/n/2 ): ")
+                        choice = self.view.return_choice("\t\nRésultat du match ( victoire joueur 1 : 1 , victoire joueur 2 :2 , match nul : 0 ): ")
                         act_match.result(int(choice))
                         act_match.finished = True
                         print(act_match)
