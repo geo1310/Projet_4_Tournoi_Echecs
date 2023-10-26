@@ -1,4 +1,6 @@
-## Installation et activation de l'environnement Virtuel
+## Configuration de l'environnement
+
+### Installation et activation de l'environnement Virtuel
 Ouvrez un nouveau terminal et taper  
 ```
 python -m venv .venv-projet4
@@ -12,7 +14,7 @@ Installer les dependances necessaires au projet
 pip install -r requirements.txt
 ```
 
-## Procédure en cas de restriction de sécurité sur le lancement des scripts
+### Procédure en cas de restriction de sécurité sur le lancement des scripts
 
 Dans l'invite de commandes, tapez la commande suivante pour afficher la politique d'exécution actuelle :
 ```
@@ -25,3 +27,6 @@ Set-ExecutionPolicy RemoteSigned
 ```
 
 Vous pouvez également définir la politique sur "Bypass" pour permettre l'exécution de tous les scripts sans restriction, mais cela comporte des risques de sécurité. Utilisez cette option avec prudence.
+
+## Lancement et Fonctionnement de l'Application Chess Tournament
+
