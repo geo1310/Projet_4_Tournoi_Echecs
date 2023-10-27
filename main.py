@@ -2,6 +2,7 @@ from controllers.base import Controller
 from views.base import View
 
 
+
 def main():
     view = View()
     chess_app = Controller(view)

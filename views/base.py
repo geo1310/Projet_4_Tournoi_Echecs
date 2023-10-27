@@ -33,7 +33,7 @@ class View:
         first_name = input("Prénom du joueur : ")
         birthday = input("Date de naissance du joueur : ")
 
-        return first_name, last_name, birthday
+        return last_name, first_name, birthday
 
     """ Affichage concernant les Tournois """
 

@@ -1,24 +1,38 @@
 import os
-from db_create import db_players_create
+from tinydb import TinyDB, Query
+
+NATIONAL_ID = 'GB13106'
+FOLDER_PLAYERS = 'data/players'
+FILE_PLAYERS = 'players.json'
+FULL_PATH_PLAYERS = os.path.join(FOLDER_PLAYERS, FILE_PLAYERS)
+
+
+def db_players_create():
+    if not os.path.exists(FOLDER_PLAYERS):
+        os.makedirs(FOLDER_PLAYERS)
+    db_players = TinyDB(FULL_PATH_PLAYERS)
+    db_players = db_players.table(NATIONAL_ID)
+    player_query = Query()
+    return db_players, player_query
 
 
 class Player:
     
     db_players, player_query = db_players_create()
 
-    def __init__(self, first_name, last_name, birthday=''):
-        self.first_name = first_name.capitalize()
+    def __init__(self, last_name, first_name, birthday=''):
         self.last_name = last_name.capitalize()
+        self.first_name = first_name.capitalize()
         self.birthday = birthday
 
     def __repr__(self):
-        return f"{self.first_name} {self.last_name} née(e) le {self.birthday}"
+        return f"{self.last_name} {self.first_name} née(e) le {self.birthday}"
 
     def to_json(self):
         # Crée un dictionnaire avec les données du joueur pour enregistrement fichier json
         return {
-            "first_name": self.first_name,
             "last_name": self.last_name,
+            "first_name": self.first_name,
             "birthday": self.birthday,
         }
 
@@ -26,104 +40,99 @@ class Player:
         """Sauvegarde un joueur de la base players.json"""
         if not self.db_players.search((self.player_query.first_name == self.first_name) & (self.player_query.last_name == self.last_name)):
             self.db_players.insert(self.to_json())
-            print(f"Le joueur {self.first_name} {self.last_name} a bien été enregistré.")
+            return f"\nLe joueur {self.first_name} {self.last_name} a bien été enregistré."
         else:
-            print(f"Le joueur {self.first_name} {self.last_name} est deja dans la liste !!!")
+            return f"\nLe joueur {self.first_name} {self.last_name} est deja dans la liste !!!"
 
     def delete(self):
         """Supprime un joueur de la base players.json"""
         if self.db_players.search((self.player_query.first_name == self.first_name) & (self.player_query.last_name == self.last_name)):
             self.db_players.remove((self.player_query.first_name == self.first_name) & (self.player_query.last_name == self.last_name))
-            print(f"Le joueur {self.first_name} {self.last_name} a bien été suppimé.")
+            return f"\nLe joueur {self.first_name} {self.last_name} a bien été suppimé."
         else:
-            print(f"Le joueur {self.first_name} {self.last_name} n'est pas dans la liste !!!")
+            return f"\nLe joueur {self.first_name} {self.last_name} n'est pas dans la liste !!!"
 
-    def del_all_db(self):
+    @staticmethod
+    def list():
+        """Retourne la liste de tous les joueurs"""
+        return Player.db_players.all()
+    
+    @staticmethod
+    def del_all_db():
         """vide players.json"""
-        self.db_players.truncate()
+        Player.db_players.truncate()
 
-    def bootstrap_db(self):
+    @staticmethod
+    def bootstrap_db():
         """Ajoute 10 joueurs à players.json"""
         players = [
             {
-                'nom': 'Smith',
-                'prenom': 'John',
-                'date_de_naissance': '15/03/1990',
-                'score': 0
+                'last_name': 'Smith',
+                'first_name': 'John',
+                'birthday': '15/03/1990'
             },
             {
-                'nom': 'Johnson',
-                'prenom': 'Alice',
-                'date_de_naissance': '22/07/1985',
-                'score': 0
+                'last_name': 'Johnson',
+                'first_name': 'Alice',
+                'birthday': '22/07/1985'
             },
             {
-                'nom': 'Brown',
-                'prenom': 'David',
-                'date_de_naissance': '10/01/1995',
-                'score': 0
+                'last_name': 'Brown',
+                'first_name': 'David',
+                'birthday': '10/01/1995'
             },
             {
-                'nom': 'Wilson',
-                'prenom': 'Emily',
-                'date_de_naissance': '30/09/1998',
-                'score': 0
+                'last_name': 'Wilson',
+                'first_name': 'Emily',
+                'birthday': '30/09/1998'
             },
             {
-                'nom': 'Martinez',
-                'prenom': 'Daniel',
-                'date_de_naissance': '08/05/1992',
-                'score': 0
+                'last_name': 'Martinez',
+                'first_name': 'Daniel',
+                'birthday': '08/05/1992'
             },
             {
-                'nom': 'Lee',
-                'prenom': 'Sophia',
-                'date_de_naissance': '19/11/1989',
-                'score': 0
+                'last_name': 'Lee',
+                'first_name': 'Sophia',
+                'birthday': '19/11/1989'
             },
             {
-                'nom': 'Garcia',
-                'prenom': 'Liam',
-                'date_de_naissance': '25/12/1997',
-                'score': 0
+                'last_name': 'Garcia',
+                'first_name': 'Liam',
+                'birthday': '25/12/1997'
             },
             {
-                'nom': 'Taylor',
-                'prenom': 'Olivia',
-                'date_de_naissance': '03/08/1994',
-                'score': 0
+                'last_name': 'Taylor',
+                'first_name': 'Olivia',
+                'birthday': '03/08/1994'
             },
             {
-                'nom': 'Harris',
-                'prenom': 'Michael',
-                'date_de_naissance': '12/04/1996',
-                'score': 0
+                'last_name': 'Harris',
+                'first_name': 'Michael',
+                'birthday': '12/04/1996'
             },
             {
-                'nom': 'Clark',
-                'prenom': 'Ella',
-                'date_de_naissance': '28/06/1991',
-                'score': 0
+                'last_name': 'Clark',
+                'first_name': 'Ella',
+                'birthday': '28/06/1991'
             }
         ]
         
         for player in players:
             
-            if not self.db_players.search((self.player_query.first_name == player['prenom']) & (self.player_query.last_name == player['nom'])):
-                self.db_players.insert(player)
-                print(f"Le joueur {player['nom']} - {player['prenom']} a bien été enregistré.")
+            if not Player.db_players.search((Player.player_query.first_name == player['first_name']) & (Player.player_query.last_name == player['last_name'])):
+                Player.db_players.insert(player)
+                print(f"Le joueur {player['last_name']} - {player['first_name']} a bien été enregistré.")
             else:
-                print(f"Le joueur {player['nom']} - {player['prenom']} est deja dans la liste !!!")
+                print(f"Le joueur {player['last_name']} - {player['first_name']} est deja dans la liste !!!")
 
     def reboot_db():
         pass
 
 
 if __name__ == "__main__":
-    os.system('cls')   
-    player = Player('sue ellen', 'cousin', '25/11/1982')
-
-    print(player)
-    player.save()
-    player.del_all_db()
-    player.bootstrap_db()
+    os.system('cls')
+    Player.bootstrap_db()   
+    print(Player.list())
+    #Player.del_all_db()
+   
