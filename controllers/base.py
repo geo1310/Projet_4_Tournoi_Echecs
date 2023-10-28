@@ -8,6 +8,9 @@ from models.match import Match
 
 
 class Controller:
+
+    DATE = datetime.date.today().strftime("%d/%m/%Y")
+
     def __init__(self, view):
         # models
         self.view = view
@@ -171,9 +174,9 @@ class Controller:
         ajoute date de début et si tournoi pas commencé, crée le round 1
         '''
         players_list = tournament.players_list
-        date = datetime.date.today().strftime("%d/%m/%Y")
+        
         if tournament.start_date == "":
-            tournament.start_date = date
+            tournament.start_date = Controller.DATE
             tournament.act_round = 1
             act_round = self.create_round(tournament.act_round, players_list)
             tournament.rounds_list.append(act_round.to_json())
@@ -196,7 +199,9 @@ class Controller:
                 self.view.display_match(act_match.to_json())
                 result = self.view.return_choice("\tRésultat du match ( 1/0/2 ) : ")
                 act_match.result(int(result))
-                act_round.matchs_list[i] = act_match.result(int(result))
+                act_round.start_date = Controller.DATE
+                tournament.rounds_list[tournament.act_round-1] = act_round.to_json()
+                tournament.save()
                 
                 print(act_match)
            
