@@ -8,6 +8,7 @@ FULL_PATH_PLAYERS = os.path.join(FOLDER_PLAYERS, FILE_PLAYERS)
 
 
 def db_players_create():
+    """Creation de la base de donnees des joueurs"""
     if not os.path.exists(FOLDER_PLAYERS):
         os.makedirs(FOLDER_PLAYERS)
     db_players = TinyDB(FULL_PATH_PLAYERS)
@@ -20,10 +21,11 @@ class Player:
     
     db_players, player_query = db_players_create()
 
-    def __init__(self, last_name, first_name, birthday=''):
+    def __init__(self, last_name, first_name, birthday='', score=0):
         self.last_name = last_name.capitalize()
         self.first_name = first_name.capitalize()
         self.birthday = birthday
+        self.score = score
 
     def __repr__(self):
         return f"{self.last_name} {self.first_name} née(e) le {self.birthday}"
@@ -34,6 +36,7 @@ class Player:
             "last_name": self.last_name,
             "first_name": self.first_name,
             "birthday": self.birthday,
+            "score": self.score
         }
 
     def save(self):
@@ -118,13 +121,14 @@ class Player:
             }
         ]
         
-        for player in players:
+        for player_test in players:
             
-            if not Player.db_players.search((Player.player_query.first_name == player['first_name']) & (Player.player_query.last_name == player['last_name'])):
-                Player.db_players.insert(player)
-                print(f"Le joueur {player['last_name']} - {player['first_name']} a bien été enregistré.")
+            if not Player.db_players.search((Player.player_query.first_name == player_test['first_name']) & (Player.player_query.last_name == player_test['last_name'])):
+                player = Player(**player_test)
+                Player.db_players.insert(player.to_json())
+                print(f"Le joueur {player.last_name} - {player.first_name} a bien été enregistré.")
             else:
-                print(f"Le joueur {player['last_name']} - {player['first_name']} est deja dans la liste !!!")
+                print(f"Le joueur {player.last_name} - {player.first_name} est deja dans la liste !!!")
 
     def reboot_db():
         pass

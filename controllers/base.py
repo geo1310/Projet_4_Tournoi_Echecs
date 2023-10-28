@@ -2,6 +2,9 @@ import sys
 import random
 import datetime
 from models.player import Player
+from models.tournament import Tournament
+from models.round import Round
+from models.match import Match
 
 
 class Controller:
@@ -117,7 +120,7 @@ class Controller:
 
     def tournaments_list(self):
         # affiche la liste des tournois
-        tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
+        tournaments_list = Tournament.list('all')
         self.view.display_tournaments_list(tournaments_list)
         self.view.prompt_wait_enter()
 
@@ -130,7 +133,7 @@ class Controller:
             new_player = Player(*self.view.create_player(f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location}. "))
             if new_player.last_name != "" and new_player.first_name !="":
                 tournament.players_list.append(new_player.to_json())
-                self.view.display_something(new_player.save_player())
+                self.view.display_something(new_player.save())
                 index += 1
             elif len(tournament.players_list) % 2 == 0 and len(tournament.players_list) != 0:
                 break
@@ -139,17 +142,13 @@ class Controller:
                 self.view.prompt_wait_enter()
 
         # sauvegarde du tournoi
-        self.view.display_something(tournament.save_tournament())
+        self.view.display_something(tournament.save())
         if self.view.ask_question("Voulez-vous démarrer le tournoi "):
             self.start_tournament(tournament)
     
     def continue_tournament(self):
         # choix d'un tournoi à commencer parmis les tournois non finis
-        tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
-        tournaments_list_not_finished = []
-        for tournament in tournaments_list:
-            if not tournament['finished']:
-                tournaments_list_not_finished.append(tournament)
+        tournaments_list_not_finished = Tournament.list('finished')
         if tournaments_list_not_finished != []:
             self.view.underline_title_and_cls("Liste des Tournois à effectuer :")
             self.view.display_tournaments_list(tournaments_list_not_finished)
@@ -157,7 +156,6 @@ class Controller:
             try:
                 choice = int(choice)
                 tournament_choice = tournaments_list_not_finished[choice-1]
-                del tournament_choice['national_id']
                 new_tournament = Tournament(**tournament_choice)
                 self.start_tournament(new_tournament)
             except Exception:  # as e --> print(f"{str(e)}")
@@ -170,51 +168,58 @@ class Controller:
     def start_tournament(self, tournament):
         '''
         lancement début d'un tournoi
-        ajoute date de début et le round 1 si tournoi pas deja commencé
+        ajoute date de début et si tournoi pas commencé, crée le round 1
         '''
         players_list = tournament.players_list
         date = datetime.date.today().strftime("%d/%m/%Y")
-        
         if tournament.start_date == "":
             tournament.start_date = date
+            tournament.act_round = 1
+            act_round = self.create_round(tournament.act_round, players_list)
+            tournament.rounds_list.append(act_round.to_json())
+            tournament.save()
+        
+        self.view.underline_title_and_cls(f"{tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds , commencé le {tournament.start_date}")
+        self.run_tournament(tournament)
+
+    def run_tournament(self, tournament):
+        
+        rounds_list = tournament.rounds_list
+        act_round = Round(**rounds_list[tournament.act_round-1])
+        
+        """ Execute le round actuel"""
+        for i in range(len(act_round.matchs_list)):
+            act_match = Match(**act_round.matchs_list[i])
+            # verifie si le match a été deja joué ( scores à 0 )
+            if act_match.finished():
+                self.view.display_something(f"Round {act_round.number} : ")
+                self.view.display_match(act_match.to_json())
+                result = self.view.return_choice("\tRésultat du match ( 1/0/2 ) : ")
+                act_match.result(int(result))
+                act_round.matchs_list[i] = act_match.result(int(result))
+                
+                print(act_match)
+           
+        self.view.prompt_wait_enter()
+
+    def create_round(self, number, players_list):
+        """ cree un round et le renvoie"""
+        if number == 1:
             # creation du round 1
-            round_one = Round(1)
+            round = Round(1)
             # creation de la liste des matchs ( joueurs choisis au hasard)
             random.shuffle(players_list)
             index = 0
             while True:
                 try:
                     match = Match([players_list[index], 0], [players_list[index+1], 0])
-                    round_one.matchs_list.append(match.to_json())
+                    round.matchs_list.append(match.to_json())
                 except Exception:
                     break
                 else:
                     index += 2
-            tournament.rounds_list.append(round_one.to_json())
-            tournament.save_tournament()
-        self.view.underline_title_and_cls(f"{tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds , commencé le {tournament.start_date}")
-        self.run_tournament(tournament)
+            return round
 
-    def run_tournament(self, tournament):
-        """ Lance les rounds non finis d'un tournoi et éxécute les matchs non executés"""
-        rounds_list = tournament.rounds_list
-        for round_enum in rounds_list:
-            #print(round_enum)
-            act_round = Round(**round_enum)
-            if act_round.finished is False:
-                self.view.display_something(f"\nRound : {act_round.number} : ")
-                matchs_list = act_round.matchs_list
-                
-                for match_enum in matchs_list:
-                    act_match = Match(**match_enum)
-                    if act_match.finished is False:
-                        self.view.display_match(act_match.to_json())
-                        choice = self.view.return_choice("\t\nRésultat du match ( victoire joueur 1 : 1 , victoire joueur 2 :2 , match nul : 0 ): ")
-                        act_match.result(int(choice))
-                        act_match.finished = True
-                        print(act_match)
-
-                self.view.prompt_wait_enter()
 
     '''
     Gestion des Rapports
@@ -223,7 +228,7 @@ class Controller:
 
     def players_tournament(self):
         # affiche la liste des joueurs d'un tournoi
-        tournaments_list = DataList(FULL_PATH_TOURNAMENTS)
+        tournaments_list = Tournament.list('all')
         self.view.underline_title_and_cls("Liste des Joueurs d'un Tournoi :")
         self.view.display_tournaments_list(tournaments_list)
         choice = self.view.return_choice("Entrer le Numéro de tournoi pour voir la liste des joueurs : ")

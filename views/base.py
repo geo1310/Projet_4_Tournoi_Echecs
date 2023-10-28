@@ -42,7 +42,7 @@ class View:
         self.underline_title_and_cls("Liste des Tournois")
         index = 1
         for tournament in tournaments_list:
-            print("{:<2} - Nom : {:<15} Lieu : {:<15} Nb de Tours : {:<15} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['start_date'], tournament['end_date']))
+            print("{:<2}- Nom : {:<5} Lieu : {:<5} Nb de Rounds : {:<5} Round en cours : {:<5} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['act_round'], tournament['start_date'], tournament['end_date']))
             index += 1
 
     def create_tournament(self):
@@ -58,7 +58,7 @@ class View:
     """ Affichage concernant les matchs """
 
     def display_match(self, match):
-        print(f"\n\t Match : {match['player_1'][0]['last_name']} {match['player_1'][0]['first_name']} contre {match['player_2'][0]['last_name']} {match['player_2'][0]['first_name']}")
+        print(f"\n\tMatch : {match['player_1'][0]['last_name']} {match['player_1'][0]['first_name']}  -   {match['player_2'][0]['last_name']} {match['player_2'][0]['first_name']}")
     
     """ Affichage divers """
 
