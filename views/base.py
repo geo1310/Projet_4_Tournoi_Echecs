@@ -42,7 +42,7 @@ class View:
         self.underline_title_and_cls("Liste des Tournois")
         index = 1
         for tournament in tournaments_list:
-            print("{:<2}- Nom : {:<5} Lieu : {:<5} Nb de Rounds : {:<5} Round en cours : {:<5} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['act_round'], tournament['start_date'], tournament['end_date']))
+            print("{:<2}- Nom : {:<10} Lieu : {:<10} Nb de Rounds : {:<10} Round en cours : {:<10} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['act_round'], tournament['start_date'], tournament['end_date']))
             index += 1
 
     def create_tournament(self):

@@ -135,8 +135,9 @@ class Controller:
         while True:
             new_player = Player(*self.view.create_player(f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location}. "))
             if new_player.last_name != "" and new_player.first_name !="":
-                tournament.players_list.append(new_player.to_json())
                 self.view.display_something(new_player.save())
+                tournament.players_list.append(new_player.to_json_tournament())
+                
                 index += 1
             elif len(tournament.players_list) % 2 == 0 and len(tournament.players_list) != 0:
                 break
@@ -240,10 +241,14 @@ class Controller:
         try:
             choice = int(choice)
             tournament_choice = tournaments_list[choice-1]
-            players_list = tournament_choice['players_list']
+            players_list_id = tournament_choice['players_list']
+            players_list = []
             tournament_name = tournament_choice['name']
             tournament_location = tournament_choice['location']
-            title = f"{tournament_name} de {tournament_location}"
+            title = f"{tournament_name} de {tournament_location} : "
+            for player_tournament in players_list_id:
+                player = Player.id_player(player_tournament['id_player'])
+                players_list.append(player)
             self.view.display_players_list(players_list, title)
         except Exception:
             self.view.display_something("\nChoix invalide !!!")

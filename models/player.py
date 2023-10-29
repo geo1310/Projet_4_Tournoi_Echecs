@@ -21,11 +21,13 @@ class Player:
     
     db_players, player_query = db_players_create()
 
-    def __init__(self, last_name, first_name, birthday='', score=0):
+    def __init__(self, last_name, first_name, birthday='', score=0, opponents=None, id_player=None):
         self.last_name = last_name.capitalize()
         self.first_name = first_name.capitalize()
         self.birthday = birthday
         self.score = score
+        self.opponents = opponents if opponents is not None else []
+        self.id_player = id_player
 
     def __repr__(self):
         return f"{self.last_name} {self.first_name} née(e) le {self.birthday}"
@@ -36,25 +38,42 @@ class Player:
             "last_name": self.last_name,
             "first_name": self.first_name,
             "birthday": self.birthday,
-            "score": self.score
+        }
+    
+    def to_json_tournament(self):
+        return {
+            "id_player": self.id_player,
+            "score": self.score,
+            "adversaries_tournament": self.adversaries_tournament
         }
 
     def save(self):
-        """Sauvegarde un joueur de la base players.json"""
-        if not self.db_players.search((self.player_query.first_name == self.first_name) & (self.player_query.last_name == self.last_name)):
-            self.db_players.insert(self.to_json())
+        """Sauvegarde un joueur dans la base players.json"""
+        search_result = self.db_players.search((self.player_query.first_name == self.first_name) & (self.player_query.last_name == self.last_name))
+        if not search_result:
+            self.id_player = self.db_players.insert(self.to_json())
             return f"\nLe joueur {self.first_name} {self.last_name} a bien été enregistré."
         else:
+            self.id_player = search_result[0].doc_id
             return f"\nLe joueur {self.first_name} {self.last_name} est deja dans la liste !!!"
 
     def delete(self):
-        """Supprime un joueur de la base players.json"""
+        """Supprime un joueur dans la base players.json"""
         if self.db_players.search((self.player_query.first_name == self.first_name) & (self.player_query.last_name == self.last_name)):
             self.db_players.remove((self.player_query.first_name == self.first_name) & (self.player_query.last_name == self.last_name))
             return f"\nLe joueur {self.first_name} {self.last_name} a bien été suppimé."
         else:
             return f"\nLe joueur {self.first_name} {self.last_name} n'est pas dans la liste !!!"
 
+    @staticmethod
+    def id_player(id_player):
+        """Trouve un joueur d'apres son id et renvoie ses donnees"""
+        search_result = Player.db_players.get(doc_id=id_player)
+        if search_result:
+            return search_result
+        else:
+            return None
+    
     @staticmethod
     def list():
         """Retourne la liste de tous les joueurs"""
@@ -135,8 +154,10 @@ class Player:
 
 
 if __name__ == "__main__":
-    os.system('cls')
-    Player.bootstrap_db()   
+    #os.system('cls')
+    #Player.bootstrap_db()   
     print(Player.list())
     #Player.del_all_db()
-   
+    #print(Player.db_players.all())
+    #print(Player.db_players.get(doc_id='2'))
+
