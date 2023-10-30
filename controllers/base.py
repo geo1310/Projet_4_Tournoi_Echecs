@@ -77,9 +77,7 @@ class Controller:
                 choice = int(choice)
                 for menu in menu_list:
                     if menu[0] == choice:
-                        if menu_items[1][menu[1]]() is False:
-                            menu_boucle = False
-                            break
+                        menu_items[1][menu[1]]()
             else:
                 self.view.invalid_choice()
                 self.view.prompt_wait_enter()
@@ -87,7 +85,6 @@ class Controller:
     def quit_menu(self):
         self.view.display_something("\nAu Revoir !!!\n")
         sys.exit()
-        return False
 
     '''
     Gestion des Joueurs

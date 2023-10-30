@@ -44,7 +44,7 @@ class Player:
         return {
             "id_player": self.id_player,
             "score": self.score,
-            "adversaries_tournament": self.adversaries_tournament
+            "opponents": self.opponents
         }
 
     def save(self):
@@ -155,8 +155,8 @@ class Player:
 
 if __name__ == "__main__":
     #os.system('cls')
-    #Player.bootstrap_db()   
-    print(Player.list())
+    Player.bootstrap_db()   
+    #print(Player.list())
     #Player.del_all_db()
     #print(Player.db_players.all())
     #print(Player.db_players.get(doc_id='2'))
