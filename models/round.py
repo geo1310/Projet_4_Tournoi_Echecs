@@ -8,7 +8,7 @@ class Round:
         self.start_date = start_date
         self.end_date = end_date
 
-    def __str__(self):
+    def __repr__(self):
         return f"{self.to_json()}"
    
     def to_json(self):

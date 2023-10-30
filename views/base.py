@@ -58,7 +58,7 @@ class View:
     """ Affichage concernant les matchs """
 
     def display_match(self, match):
-        print(f"\n\tMatch : {match['player_1'][0]['last_name']} {match['player_1'][0]['first_name']}  -   {match['player_2'][0]['last_name']} {match['player_2'][0]['first_name']}")
+        print(f"\n\tMatch : {match['player_1'][0]['id_player']}   -   {match['player_2'][0]['id_player']}")
     
     """ Affichage divers """
 

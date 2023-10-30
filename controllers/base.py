@@ -179,30 +179,49 @@ class Controller:
             act_round = self.create_round(tournament.act_round, players_list)
             tournament.rounds_list.append(act_round.to_json())
             tournament.save()
-        
-        self.view.underline_title_and_cls(f"{tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds , commencé le {tournament.start_date}")
         self.run_tournament(tournament)
-
+        
     def run_tournament(self, tournament):
-        
+        """Execution d'un tournoi"""
+        act_round_number = tournament.act_round
+        players_list = tournament.players_list
         rounds_list = tournament.rounds_list
-        act_round = Round(**rounds_list[tournament.act_round-1])
+
+        self.view.underline_title_and_cls(f"{tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds , commencé le {tournament.start_date}")
+        self.view.display_something(f"\nRound : {act_round_number}")
         
-        """ Execute le round actuel"""
-        for i in range(len(act_round.matchs_list)):
-            act_match = Match(**act_round.matchs_list[i])
-            # verifie si le match a été deja joué ( scores à 0 )
-            if act_match.finished():
-                self.view.display_something(f"Round {act_round.number} : ")
-                self.view.display_match(act_match.to_json())
-                result = self.view.return_choice("\tRésultat du match ( 1/0/2 ) : ")
-                act_match.result(int(result))
-                act_round.start_date = Controller.DATE
-                tournament.rounds_list[tournament.act_round-1] = act_round.to_json()
-                tournament.save()
+
+        # recherche du round actuel
+        for round_enum in rounds_list:
+            if round_enum.get('number') == act_round_number:
+                # instance du round actuel
                 
-                print(act_match)
-           
+                act_round = Round(**round_enum)
+                act_round.start_date = Controller.DATE
+                print(act_round)
+                matchs_list = act_round.matchs_list
+                matchs_finished = 0
+                for match_enum in matchs_list:
+                    # instance du match actuel
+                    act_match = Match(**match_enum)
+                    if act_match.not_finished():
+                        self.view.display_match(act_match.to_json())
+    
+                        while True:
+                            result = self.view.return_choice("\n\tRésultat du match ( 1: Joueur 1 vainqueur, 0: match nul, 2: Joueur 2 vainqueur ) :")
+                            if result.isdigit() and (result == '1' or result == '0' or result == '2'):
+                                act_match.result(int(result))
+                                # enregistrement des resultats
+                                tournament.save()
+                                break
+                            else:
+                                print("\n\tChoix Invalide, veuillez entrer 1, 0 ou 2 ")
+                    else:
+                        matchs_finished += 1
+                        if matchs_finished == len(matchs_list):
+                            act_round.end_date = Controller.DATE
+                            tournament.save()
+
         self.view.prompt_wait_enter()
 
     def create_round(self, number, players_list):

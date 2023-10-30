@@ -1,52 +1,80 @@
 {
-    "GB13106": {
-        "1": {
-            "name": "Tournoi 1",
-            "location": "Lille",
-            "description": "",
-            "nb_rounds": 4,
-            "players_list": [
-                {
-                    "id_player": 12,
-                    "score": 0,
-                    "opponents": []
-                },
-                {
-                    "id_player": 11,
-                    "score": 0,
-                    "opponents": []
-                }
-            ],
-            "rounds_list": [
-                {
-                    "number": 1,
-                    "matchs_list": [
-                        {
-                            "player_1": [
-                                {
-                                    "id_player": 12,
-                                    "score": 0,
-                                    "opponents": []
-                                },
-                                0
-                            ],
-                            "player_2": [
-                                {
-                                    "id_player": 11,
-                                    "score": 0,
-                                    "opponents": []
-                                },
-                                0
-                            ]
-                        }
-                    ],
-                    "start_date": "",
-                    "end_date": ""
-                }
-            ],
-            "act_round": 1,
-            "start_date": "29/10/2023",
-            "end_date": ""
+  "GB13106": {
+    "1": {
+      "name": "Tournoi 1",
+      "location": "Lille",
+      "description": "",
+      "nb_rounds": 4,
+      "players_list": [
+        {
+          "id_player": 16,
+          "score": 1,
+          "opponents": []
+        },
+        {
+          "id_player": 14,
+          "score": 0,
+          "opponents": []
+        },
+        {
+          "id_player": 13,
+          "score": 0,
+          "opponents": []
+        },
+        {
+          "id_player": 15,
+          "score": 0,
+          "opponents": []
         }
+      ],
+      "rounds_list": [
+        {
+          "number": 1,
+          "matchs_list": [
+            {
+              "player_1": [
+                {
+                  "id_player": 16,
+                  "score": 1,
+                  "opponents": []
+                },
+                1
+              ],
+              "player_2": [
+                {
+                  "id_player": 14,
+                  "score": 0,
+                  "opponents": []
+                },
+                0
+              ]
+            },
+            {
+              "player_1": [
+                {
+                  "id_player": 13,
+                  "score": 0,
+                  "opponents": []
+                },
+                0
+              ],
+              "player_2": [
+                {
+                  "id_player": 15,
+                  "score": 1,
+                  "opponents": []
+                },
+                1
+              ]
+            }
+          ],
+          "start_date": "",
+          "end_date": ""
+        }
+      ],
+      "act_round": 1,
+      "start_date": "30/10/2023",
+      "end_date": ""
     }
+  }
 }
