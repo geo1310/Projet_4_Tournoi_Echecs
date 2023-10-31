@@ -71,7 +71,7 @@ class Tournament:
         """
         if filter == 'all':
             return Tournament.db_tournaments.all()
-        elif filter == 'finished':
+        elif filter == 'not_finished':
             return Tournament.db_tournaments.search(Tournament.tournaments_query.end_date == '')
 
 

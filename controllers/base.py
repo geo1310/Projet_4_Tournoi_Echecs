@@ -1,10 +1,10 @@
 import sys
 import random
 import datetime
-from models.player import Player
-from models.tournament import Tournament
-from models.round import Round
-from models.match import Match
+from models.player_model import Player
+from models.tournament_model import Tournament
+from models.round_model import Round
+from models.match_model import Match
 
 
 class Controller:
@@ -149,7 +149,7 @@ class Controller:
     
     def continue_tournament(self):
         # choix d'un tournoi à commencer parmis les tournois non finis
-        tournaments_list_not_finished = Tournament.list('finished')
+        tournaments_list_not_finished = Tournament.list('not_finished')
         if tournaments_list_not_finished != []:
             self.view.underline_title_and_cls("Liste des Tournois à effectuer :")
             self.view.display_tournaments_list(tournaments_list_not_finished)
@@ -181,24 +181,25 @@ class Controller:
             tournament.save()
         self.run_tournament(tournament)
         
+
     def run_tournament(self, tournament):
-        """Execution d'un tournoi"""
-        act_round_number = tournament.act_round
-        players_list = tournament.players_list
+        """ Execution d'un tournoi """
+
         rounds_list = tournament.rounds_list
+        act_round_number = tournament.act_round
 
         self.view.underline_title_and_cls(f"{tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds , commencé le {tournament.start_date}")
         self.view.display_something(f"\nRound : {act_round_number}")
-        
 
-        # recherche du round actuel
-        for round_enum in rounds_list:
+        # instancation du round en cours
+        for i, round_enum in enumerate(rounds_list):
             if round_enum.get('number') == act_round_number:
-                # instance du round actuel
-                
                 act_round = Round(**round_enum)
                 act_round.start_date = Controller.DATE
-                print(act_round)
+
+                rounds_list[i] = act_round.to_json()
+                tournament.save()
+
                 matchs_list = act_round.matchs_list
                 matchs_finished = 0
                 for match_enum in matchs_list:
@@ -206,7 +207,7 @@ class Controller:
                     act_match = Match(**match_enum)
                     if act_match.not_finished():
                         self.view.display_match(act_match.to_json())
-    
+                        # execution du match
                         while True:
                             result = self.view.return_choice("\n\tRésultat du match ( 1: Joueur 1 vainqueur, 0: match nul, 2: Joueur 2 vainqueur ) :")
                             if result.isdigit() and (result == '1' or result == '0' or result == '2'):
@@ -220,8 +221,11 @@ class Controller:
                         matchs_finished += 1
                         if matchs_finished == len(matchs_list):
                             act_round.end_date = Controller.DATE
+                            rounds_list[i] = act_round.to_json()
+                            if act_round_number < tournament.nb_rounds:
+                                tournament.act_round += 1
                             tournament.save()
-
+        
         self.view.prompt_wait_enter()
 
     def create_round(self, number, players_list):
