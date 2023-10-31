@@ -243,11 +243,15 @@ class Controller:
             index = 0
             while True:
                 try:
-                    match = Match([players_list[index], 0], [players_list[index+1], 0])
+                    player_1 = players_list[index]
+                    player_2 = players_list[index+1]
+                    match = Match([player_1, 0], [player_2, 0])
                     round.matchs_list.append(match.to_json())
                 except Exception:
                     break
                 else:
+                    player_1['opponents'].append(player_2['id_player'])
+                    player_2['opponents'].append(player_1['id_player'])
                     index += 2
             return round
         else:
