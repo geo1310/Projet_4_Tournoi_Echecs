@@ -169,16 +169,17 @@ class Controller:
     def start_tournament(self, tournament):
         '''
         lancement début d'un tournoi
-        ajoute date de début et si tournoi pas commencé, crée le round 1
+        ajoute date de début et si tournoi pas commencé, crée le round 
         '''
         players_list = tournament.players_list
         
         if tournament.start_date == "":
             tournament.start_date = Controller.DATE
             tournament.act_round = 1
-            act_round = self.create_round(tournament.act_round, players_list)
-            tournament.rounds_list.append(act_round.to_json())
-            tournament.save()
+
+        act_round = self.create_round(tournament.act_round, players_list)
+        tournament.rounds_list.append(act_round.to_json())
+        tournament.save()
         self.run_tournament(tournament)
         
 
@@ -191,41 +192,45 @@ class Controller:
         self.view.underline_title_and_cls(f"{tournament.name} de {tournament.location} en {tournament.nb_rounds} Rounds , commencé le {tournament.start_date}")
         self.view.display_something(f"\nRound : {act_round_number}")
 
-        # instancation du round en cours
+        # instancation et lancement du round en cours
         for i, round_enum in enumerate(rounds_list):
             if round_enum.get('number') == act_round_number:
                 act_round = Round(**round_enum)
                 act_round.start_date = Controller.DATE
+                break
 
-                rounds_list[i] = act_round.to_json()
-                tournament.save()
+        rounds_list[i] = act_round.to_json()
+        tournament.save()
 
-                matchs_list = act_round.matchs_list
-                matchs_finished = 0
-                for match_enum in matchs_list:
-                    # instance du match actuel
-                    act_match = Match(**match_enum)
-                    if act_match.not_finished():
-                        self.view.display_match(act_match.to_json())
-                        # execution du match
-                        while True:
-                            result = self.view.return_choice("\n\tRésultat du match ( 1: Joueur 1 vainqueur, 0: match nul, 2: Joueur 2 vainqueur ) :")
-                            if result.isdigit() and (result == '1' or result == '0' or result == '2'):
-                                act_match.result(int(result))
-                                # enregistrement des resultats
-                                tournament.save()
-                                break
-                            else:
-                                print("\n\tChoix Invalide, veuillez entrer 1, 0 ou 2 ")
-                    else:
-                        matchs_finished += 1
-                        if matchs_finished == len(matchs_list):
-                            act_round.end_date = Controller.DATE
-                            rounds_list[i] = act_round.to_json()
-                            if act_round_number < tournament.nb_rounds:
-                                tournament.act_round += 1
-                            tournament.save()
+        matchs_list = act_round.matchs_list
         
+        for match_enum in matchs_list:
+            # instance du match actuel
+            act_match = Match(**match_enum)
+            if act_match.not_finished():
+                self.view.display_match(act_match.to_json())
+                # execution du match
+                while True:
+                    result = self.view.return_choice("\n\tRésultat du match ( 1: Joueur 1 vainqueur, 0: match nul, 2: Joueur 2 vainqueur ) :")
+                    # validation d'un match
+                    if result.isdigit() and (result == '1' or result == '0' or result == '2'):
+                        act_match.result(int(result))
+                        # enregistrement des resultats
+                        tournament.save()
+                        break
+                    else:
+                        print("\n\tChoix Invalide, veuillez entrer 1, 0 ou 2 ")
+                    
+        act_round.end_date = Controller.DATE
+        rounds_list[i] = act_round.to_json()
+        tournament.save()
+        if act_round_number < tournament.nb_rounds:
+            tournament.act_round += 1
+            tournament.save()
+            self.start_tournament(tournament)
+        else:
+            print('tournoi fini')
+
         self.view.prompt_wait_enter()
 
     def create_round(self, number, players_list):
@@ -245,6 +250,12 @@ class Controller:
                 else:
                     index += 2
             return round
+        else:
+            round = Round(number)
+
+            print(round)
+            print(players_list)
+            self.view.prompt_wait_enter()
 
 
     '''
