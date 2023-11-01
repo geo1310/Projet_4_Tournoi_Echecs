@@ -172,12 +172,21 @@ class Controller:
         ajoute date de début et si tournoi pas commencé, crée le round 
         '''
         players_list = tournament.players_list
-        
+        print(tournament.rounds_list)
+        # verifie si le tournoi n'est pas encore commencé
         if tournament.start_date == "":
             tournament.start_date = Controller.DATE
             tournament.act_round = 1
-
-        act_round = self.create_round(tournament.act_round, players_list)
+        
+        # verifie si le round et ses matchs sont deja crees
+        is_round = False
+        for round in tournament.rounds_list:
+            if round['number'] == tournament.act_round:
+                is_round = True
+                act_round = Round(**round)
+                break
+        if not is_round:
+            act_round = self.create_round(tournament.act_round, players_list)
         tournament.rounds_list.append(act_round.to_json())
         tournament.save()
         self.run_tournament(tournament)
@@ -223,44 +232,56 @@ class Controller:
                     
         act_round.end_date = Controller.DATE
         rounds_list[i] = act_round.to_json()
+        tournament.players_list = sorted(tournament.players_list, key=lambda x: x["score"], reverse=True)
         tournament.save()
         if act_round_number < tournament.nb_rounds:
             tournament.act_round += 1
             tournament.save()
             self.start_tournament(tournament)
         else:
-            print('tournoi fini')
+            tournament.end_date = Controller.DATE
+            tournament.save()
+            self.view.display_something("\nLe Tournoi est fini !!!")
 
         self.view.prompt_wait_enter()
+        self.run()
 
     def create_round(self, number, players_list):
         """ cree un round et le renvoie"""
+        
+        # creation du round
+        round = Round(number)
         if number == 1:
-            # creation du round 1
-            round = Round(1)
             # creation de la liste des matchs ( joueurs choisis au hasard)
             random.shuffle(players_list)
-            index = 0
-            while True:
-                try:
-                    player_1 = players_list[index]
-                    player_2 = players_list[index+1]
+
+        # liste des joueurs ayant deja joués
+        players_played = set()
+
+        for i in range(len(players_list)):
+            player_1 = players_list[i]
+            if player_1['id_player'] in players_played:
+                continue
+            for j in range(i + 1, len(players_list)):
+                player_2 = players_list[j]
+                if player_2['id_player'] in players_played:
+                    continue
+
+                # Vérifie si les joueurs n'ont pas déjà joué ensemble
+                if player_2['id_player'] not in player_1['opponents']:
+                    # Crée un match et l ajoute à la liste des matchs
                     match = Match([player_1, 0], [player_2, 0])
                     round.matchs_list.append(match.to_json())
-                except Exception:
-                    break
-                else:
+
+                    # Mise à jour de la liste des adversaires des joueurs
                     player_1['opponents'].append(player_2['id_player'])
                     player_2['opponents'].append(player_1['id_player'])
-                    index += 2
-            return round
-        else:
-            round = Round(number)
-
-            print(round)
-            print(players_list)
-            self.view.prompt_wait_enter()
-
+                    # Mise à jour de la liste des joueurs ayant deja joués
+                    players_played.add(player_1['id_player'])
+                    players_played.add(player_2['id_player'])
+                    break
+                
+        return round
 
     '''
     Gestion des Rapports

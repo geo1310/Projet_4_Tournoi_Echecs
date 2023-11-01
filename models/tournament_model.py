@@ -62,7 +62,7 @@ class Tournament:
         else:
             self.db_tournaments.update(self.to_json())
             return f"\nLe tournoi {self.name} de {self.location} a été mis à jour !!!"
-        
+
     @staticmethod
     def list(filter):
         """Retourne la liste de tous les tournois selon un critere de selection
@@ -77,8 +77,4 @@ class Tournament:
 
 if __name__ == "__main__":
     os.system('cls')
-    tournament = Tournament('tournoi 1', 'lille')
-    print(tournament.to_json())
-    tournament.act_round = 3
-    print(tournament.save())
-    print(tournament.to_json())
+    print(Tournament.verify_round(1))
