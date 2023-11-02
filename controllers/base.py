@@ -290,26 +290,41 @@ class Controller:
 
     def players_tournament(self):
         # affiche la liste des joueurs d'un tournoi
-        tournaments_list = Tournament.list('all')
         self.view.underline_title_and_cls("Liste des Joueurs d'un Tournoi :")
-        self.view.display_tournaments_list(tournaments_list)
-        choice = self.view.return_choice("Entrer le Numéro de tournoi pour voir la liste des joueurs : ")
-        try:
-            choice = int(choice)
-            tournament_choice = tournaments_list[choice-1]
-            players_list_id = tournament_choice['players_list']
-            players_list = []
-            tournament_name = tournament_choice['name']
-            tournament_location = tournament_choice['location']
-            title = f"{tournament_name} de {tournament_location} : "
-            for player_tournament in players_list_id:
-                player = Player.id_player(player_tournament['id_player'])
-                players_list.append(player)
-            self.view.display_players_list(players_list, title)
-        except Exception:
-            self.view.display_something("\nChoix invalide !!!")
+        tournament_choice = self.choice_tournament()
+        players_list_id = tournament_choice['players_list']
+        players_list = []
+        tournament_name = tournament_choice['name']
+        tournament_location = tournament_choice['location']
+        title = f"{tournament_name} de {tournament_location} : "
+        for player_tournament in players_list_id:
+            player = Player.id_player(player_tournament['id_player'])
+            players_list.append(player)
+        self.view.display_players_list(players_list, title)
         self.view.prompt_wait_enter()
 
     def rounds_matches_tournament(self):
-        print("Liste des Tours et matchs d'un tournoi")
+        # affiche les rounds et les matchs d'un tournoi
+        self.view.underline_title_and_cls("Liste des Rounds et matchs d'un Tournoi :")
+        tournament_choice = self.choice_tournament()
+        rounds_list = tournament_choice['rounds_list']
+        for round in rounds_list:
+            self.view.display_something(f"\nRound {round['number']} : \n")
+            matchs_list = round['matchs_list']
+            for match in matchs_list:
+                print(match)
+                self.view.display_match(match)
         self.view.prompt_wait_enter()
+
+    def choice_tournament(self): 
+        # choisi un tournoi dans la liste des tournois et le retourne
+        tournaments_list = Tournament.list('all')
+        self.view.display_tournaments_list(tournaments_list)
+        choice = self.view.return_choice("Entrer le Numéro de tournoi : ")
+        try:
+            choice = int(choice)
+            tournament_choice = tournaments_list[choice-1]
+        except Exception:
+            self.view.display_something("\nChoix invalide !!!")
+        else:
+            return tournament_choice
