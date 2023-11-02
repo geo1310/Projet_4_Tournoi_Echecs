@@ -1,5 +1,7 @@
 import os
 from tinydb import TinyDB, Query
+import random
+import string
 
 NATIONAL_ID = 'GB13106'
 FOLDER_TOURNAMENTS = 'data/tournaments'
@@ -56,7 +58,8 @@ class Tournament:
         }
 
     def save(self):
-        if not self.db_tournaments.search((self.tournaments_query.name == self.name) & (self.tournaments_query.location == self.location)):
+        tournament_exist = self.db_tournaments.search((self.tournaments_query.name == self.name) & (self.tournaments_query.location == self.location))
+        if not tournament_exist:
             self.db_tournaments.insert(self.to_json())
             return f"\nLe tournoi {self.name} de {self.location} a bien été enregistré."
         else:
@@ -77,4 +80,67 @@ class Tournament:
 
 if __name__ == "__main__":
     os.system('cls')
-    print(Tournament.verify_round(1))
+
+    def generate_random_word(length=5):
+        letters = string.ascii_lowercase  # Lettres minuscules
+        return ''.join(random.choice(letters) for _ in range(length))
+    
+    tournament_name = generate_random_word()
+    tournament_location = generate_random_word()
+
+    # cree un tournoi test
+    players_list_test = [
+        {
+            "id_player": 1,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 4,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 3,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 10,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 6,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 9,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 8,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 5,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 2,
+            "score": 0,
+            "opponents": []
+        },
+        {
+            "id_player": 7,
+            "score": 0,
+            "opponents": []
+        }
+    ]
+    tournament = Tournament(tournament_name, tournament_location, 'tournoi test', 2, players_list_test )
+    tournament.save()
+    

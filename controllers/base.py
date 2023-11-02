@@ -159,7 +159,7 @@ class Controller:
                 tournament_choice = tournaments_list_not_finished[choice-1]
                 new_tournament = Tournament(**tournament_choice)
                 self.start_tournament(new_tournament)
-            except Exception:  # as e --> print(f"{str(e)}")
+            except Exception:  # as e
                 self.view.display_something("\nChoix invalide !!!")
                 self.view.prompt_wait_enter()
         else:
@@ -172,7 +172,6 @@ class Controller:
         ajoute date de début et si tournoi pas commencé, crée le round 
         '''
         players_list = tournament.players_list
-        print(tournament.rounds_list)
         # verifie si le tournoi n'est pas encore commencé
         if tournament.start_date == "":
             tournament.start_date = Controller.DATE
@@ -187,11 +186,10 @@ class Controller:
                 break
         if not is_round:
             act_round = self.create_round(tournament.act_round, players_list)
-        tournament.rounds_list.append(act_round.to_json())
+            tournament.rounds_list.append(act_round.to_json())
         tournament.save()
         self.run_tournament(tournament)
         
-
     def run_tournament(self, tournament):
         """ Execution d'un tournoi """
 
@@ -217,7 +215,9 @@ class Controller:
             # instance du match actuel
             act_match = Match(**match_enum)
             if act_match.not_finished():
-                self.view.display_match(act_match.to_json())
+                player_1 = Player.id_player(act_match.player_1[0]['id_player']), act_match.player_1[1]
+                player_2 = Player.id_player(act_match.player_2[0]['id_player']), act_match.player_2[1]
+                self.view.display_match(player_1, player_2)
                 # execution du match
                 while True:
                     result = self.view.return_choice("\n\tRésultat du match ( 1: Joueur 1 vainqueur, 0: match nul, 2: Joueur 2 vainqueur ) :")
@@ -228,7 +228,7 @@ class Controller:
                         tournament.save()
                         break
                     else:
-                        print("\n\tChoix Invalide, veuillez entrer 1, 0 ou 2 ")
+                        self.view.display_something("\n\tChoix Invalide, veuillez entrer 1, 0 ou 2 ")
                     
         act_round.end_date = Controller.DATE
         rounds_list[i] = act_round.to_json()
@@ -290,7 +290,6 @@ class Controller:
 
     def players_tournament(self):
         # affiche la liste des joueurs d'un tournoi
-        self.view.underline_title_and_cls("Liste des Joueurs d'un Tournoi :")
         tournament_choice = self.choice_tournament()
         players_list_id = tournament_choice['players_list']
         players_list = []
@@ -305,15 +304,18 @@ class Controller:
 
     def rounds_matches_tournament(self):
         # affiche les rounds et les matchs d'un tournoi
-        self.view.underline_title_and_cls("Liste des Rounds et matchs d'un Tournoi :")
         tournament_choice = self.choice_tournament()
+        tournament_name = tournament_choice['name']
+        tournament_location = tournament_choice['location']
         rounds_list = tournament_choice['rounds_list']
+        self.view.underline_title_and_cls(f"Liste des Rounds et des Matchs : {tournament_name} de {tournament_location}")
         for round in rounds_list:
             self.view.display_something(f"\nRound {round['number']} : \n")
             matchs_list = round['matchs_list']
             for match in matchs_list:
-                print(match)
-                self.view.display_match(match)
+                player_1 = Player.id_player(match['player_1'][0]['id_player']), match['player_1'][1]
+                player_2 = Player.id_player(match['player_2'][0]['id_player']), match['player_2'][1]
+                self.view.display_match_result(player_1, player_2)
         self.view.prompt_wait_enter()
 
     def choice_tournament(self): 

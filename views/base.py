@@ -57,9 +57,13 @@ class View:
     
     """ Affichage concernant les matchs """
 
-    def display_match(self, match):
-        print(f"\n\tMatch : {match['player_1'][0]['id_player']} Score : {match['player_1'][0]['score']}  -   {match['player_2'][0]['id_player']} Score : {match['player_2'][0]['score']}")
+    def display_match(self, player_1, player_2):
+        print(f"\n\t{player_1[0]['last_name']} {player_1[0]['first_name']}  -  {player_2[0]['last_name']} {player_2[0]['first_name']}")
     
+    def display_match_result(self, player_1, player_2):
+        print("Joueur 1 : {:<10} {:<10} Score : {:<5}  Joueur 2 : {:<10} {:<10} Score : {:<5}".format(player_1[0]['last_name'], player_1[0]['first_name'], player_1[1], player_2[0]['last_name'], player_2[0]['first_name'], player_2[1]))
+
+
     """ Affichage divers """
 
     def ask_question(self, text):
