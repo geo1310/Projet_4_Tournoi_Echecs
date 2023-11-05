@@ -28,5 +28,21 @@ Set-ExecutionPolicy RemoteSigned
 
 Vous pouvez également définir la politique sur "Bypass" pour permettre l'exécution de tous les scripts sans restriction, mais cela comporte des risques de sécurité. Utilisez cette option avec prudence.
 
-## Lancement et Fonctionnement de l'Application Chess Tournament
+# Lancement et Fonctionnement de l'Application Chess Tournament
+
+## Tournoi d'Echecs
+
+Gère une liste de joueurs.<br>
+Gère la création et le déroulement de Tournois D'échecs.<br>
+Génère des rapports sur les tournois et les joueurs.
+
+## Installation
+
+Installer Python `3.6+`.
+
+## Usage
+
+```bash
+python main.py  # ou python3 main.py
+```
 

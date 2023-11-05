@@ -1,4 +1,5 @@
 import os
+import secrets
 
 
 class Match:
@@ -7,14 +8,16 @@ class Match:
     MATCH_NUL = 0.5
 
     def __init__(self, player_1, player_2):
+        self.id = secrets.token_hex(4)
         self.player_1 = player_1
         self.player_2 = player_2
 
     def __repr__(self):
         return f"{self.player_1} - {self.player_2}"
 
-    def to_json(self):
+    def to_dict(self):
         return {
+            'id': self.id,
             'player_1': self.player_1,
             'player_2': self.player_2
         }

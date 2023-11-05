@@ -1,4 +1,5 @@
 import os
+import secrets
 from tinydb import TinyDB, Query
 
 NATIONAL_ID = 'GB13106'
@@ -21,39 +22,39 @@ class Player:
     db_players, player_query = db_players_create()
 
     def __init__(self, last_name, first_name, birthday='', score=0, opponents=None, id_player=None):
+        self.id = secrets.token_hex(4)
         self.last_name = last_name.capitalize()
         self.first_name = first_name.capitalize()
         self.birthday = birthday
         self.score = score
         self.opponents = opponents if opponents else []
-        self.id_player = id_player
 
     def __repr__(self):
         return f"{self.last_name} {self.first_name} née(e) le {self.birthday}"
 
-    def to_json(self):
+    def to_dict(self):
         # Crée un dictionnaire avec les données du joueur pour enregistrement fichier json
         return {
+            "id": self.id,
             "last_name": self.last_name,
             "first_name": self.first_name,
             "birthday": self.birthday,
         }
     
-    def to_json_tournament(self):
+    def to_dict_tournament(self):
         return {
-            "id_player": self.id_player,
+            "id": self.id,
             "score": self.score,
             "opponents": self.opponents
         }
 
-    def save(self):
+    def create(self):
         """Sauvegarde un joueur dans la base players.json"""
         search_result = self.db_players.search((self.player_query.first_name == self.first_name) & (self.player_query.last_name == self.last_name))
         if not search_result:
-            self.id_player = self.db_players.insert(self.to_json())
+            self.db_players.insert(self.to_dict())
             return f"\nLe joueur {self.first_name} {self.last_name} a bien été enregistré."
         else:
-            self.id_player = search_result[0].doc_id
             return f"\nLe joueur {self.first_name} {self.last_name} est deja dans la liste !!!"
 
     def delete(self):
@@ -144,7 +145,7 @@ class Player:
             
             if not Player.db_players.search((Player.player_query.first_name == player_test['first_name']) & (Player.player_query.last_name == player_test['last_name'])):
                 player = Player(**player_test)
-                Player.db_players.insert(player.to_json())
+                Player.db_players.insert(player.to_dict())
                 print(f"Le joueur {player.last_name} - {player.first_name} a bien été enregistré.")
             else:
                 print(f"Le joueur {player.last_name} - {player.first_name} est deja dans la liste !!!")

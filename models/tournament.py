@@ -1,4 +1,5 @@
 import os
+import secrets
 from tinydb import TinyDB, Query
 import random
 import string
@@ -24,6 +25,7 @@ class Tournament:
     db_tournaments, tournaments_query = db_tournaments_create()
 
     def __init__(self, name, location, description='', nb_rounds=4, players_list=None, rounds_list=None, act_round=0, start_date='', end_date=''):
+        self.id = secrets.token_hex(4)
         self.name = name.capitalize()
         self.location = location.capitalize()
         self.description = description
@@ -46,6 +48,7 @@ class Tournament:
     def to_json(self):
         # Crée un dictionnaire avec les données du joueur pour enregistrement fichier json
         return {
+            "id": self.id,
             "name": self.name,
             "location": self.location,
             "description": self.description,

@@ -1,8 +1,10 @@
 import os
+import secrets
 
 
 class Round:
     def __init__(self, number, matchs_list=None, start_date='', end_date=''):
+        self.id = secrets.token_hex(4)
         self.number = number
         self.matchs_list = matchs_list if matchs_list is not None else []
         self.start_date = start_date
@@ -11,8 +13,9 @@ class Round:
     def __repr__(self):
         return f"{self.to_json()}"
    
-    def to_json(self):
+    def to_dict(self):
         return {
+            'id': self.id,
             'number': self.number,
             'matchs_list': self.matchs_list,
             'start_date': self.start_date,
