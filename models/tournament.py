@@ -34,8 +34,8 @@ class Tournament:
                 self.nb_rounds = 4
         else:
             self.nb_rounds = nb_rounds
-        self.players_list = players_list if players_list is not None else []
-        self.rounds_list = rounds_list if rounds_list is not None else []
+        self.players_list = players_list if players_list else []
+        self.rounds_list = rounds_list if rounds_list else []
         self.act_round = act_round
         self.start_date = start_date
         self.end_date = end_date
@@ -59,6 +59,8 @@ class Tournament:
 
     def save(self):
         tournament_exist = self.db_tournaments.search((self.tournaments_query.name == self.name) & (self.tournaments_query.location == self.location))
+        print(tournament_exist)
+        text = input('.............')
         if not tournament_exist:
             self.db_tournaments.insert(self.to_json())
             return f"\nLe tournoi {self.name} de {self.location} a bien été enregistré."

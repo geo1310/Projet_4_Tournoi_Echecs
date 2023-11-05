@@ -1,10 +1,10 @@
 import sys
 import random
 import datetime
-from models.player_model import Player
-from models.tournament_model import Tournament
-from models.round_model import Round
-from models.match_model import Match
+from models.player import Player
+from models.tournament import Tournament
+from models.round import Round
+from models.match import Match
 
 
 class Controller:
@@ -171,6 +171,7 @@ class Controller:
         lancement début d'un tournoi
         ajoute date de début et si tournoi pas commencé, crée le round 
         '''
+        print(tournament)
         players_list = tournament.players_list
         # verifie si le tournoi n'est pas encore commencé
         if tournament.start_date == "":
@@ -187,6 +188,7 @@ class Controller:
         if not is_round:
             act_round = self.create_round(tournament.act_round, players_list)
             tournament.rounds_list.append(act_round.to_json())
+        print(tournament)
         tournament.save()
         self.run_tournament(tournament)
         
@@ -257,7 +259,7 @@ class Controller:
 
         # liste des joueurs ayant deja joués
         players_played = set()
-
+        
         for i in range(len(players_list)):
             player_1 = players_list[i]
             if player_1['id_player'] in players_played:

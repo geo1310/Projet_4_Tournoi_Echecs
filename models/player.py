@@ -12,7 +12,6 @@ def db_players_create():
     if not os.path.exists(FOLDER_PLAYERS):
         os.makedirs(FOLDER_PLAYERS)
     db_players = TinyDB(FULL_PATH_PLAYERS)
-    db_players = db_players.table(NATIONAL_ID)
     player_query = Query()
     return db_players, player_query
 
@@ -26,7 +25,7 @@ class Player:
         self.first_name = first_name.capitalize()
         self.birthday = birthday
         self.score = score
-        self.opponents = opponents if opponents is not None else []
+        self.opponents = opponents if opponents else []
         self.id_player = id_player
 
     def __repr__(self):
@@ -77,6 +76,7 @@ class Player:
     @staticmethod
     def list():
         """Retourne la liste de tous les joueurs"""
+        # return [Player(**data) for data in Player.db_players.all()]
         return Player.db_players.all()
     
     @staticmethod
