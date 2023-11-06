@@ -1,6 +1,4 @@
-import os
 import secrets
-
 
 class Match:
 
@@ -23,34 +21,30 @@ class Match:
         }
 
     def result(self, number):
-        if number == 1:
+
+        if number == 0:
+            self.player_1[1] = Match.MATCH_NUL
+            self.player_1[0].score += Match.MATCH_NUL
+            self.player_2[1] = Match.MATCH_NUL
+            self.player_2[0].score += Match.MATCH_NUL
+            return True
+        elif number == 1:
             self.player_1[1] = Match.MATCH_WIN
-            self.player_1[0]['score'] += Match.MATCH_WIN
+            self.player_1[0].score += Match.MATCH_WIN
             self.player_2[1] = 0
             return True
         elif number == 2:
             self.player_1[1] = 0
             self.player_2[1] = Match.MATCH_WIN
-            self.player_2[0]['score'] += Match.MATCH_WIN
-            return True
-        elif number == 0:
-            self.player_1[1] = Match.MATCH_NUL
-            self.player_1[0]['score'] += Match.MATCH_NUL
-            self.player_2[1] = Match.MATCH_NUL
-            self.player_2[0]['score'] += Match.MATCH_NUL
+            self.player_2[0].score += Match.MATCH_WIN
             return True
         else:
             return False
 
-    def not_finished(self):
+    def finished(self):
         if self.player_1[1] == 0 and self.player_2[1] == 0:
-            return True
-        else:
             return False
+        else:
+            return True
 
-
-if __name__ == "__main__":
-    os.system('cls')
-    match = Match(['player1', 0], ['player2', 0])
-    match.result(2)
-    print(match)
+    

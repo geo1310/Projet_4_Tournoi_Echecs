@@ -1,37 +1,27 @@
-import os
 import secrets
-
 
 class Round:
     def __init__(self, number, matchs_list=None, start_date='', end_date=''):
         self.id = secrets.token_hex(4)
         self.number = number
-        self.matchs_list = matchs_list if matchs_list is not None else []
+        self.matchs_list = matchs_list if matchs_list else []
         self.start_date = start_date
         self.end_date = end_date
 
     def __repr__(self):
-        return f"{self.to_json()}"
-   
+        return f"{self.__dict__}"
+    
     def to_dict(self):
-        return {
-            'id': self.id,
-            'number': self.number,
-            'matchs_list': self.matchs_list,
-            'start_date': self.start_date,
-            'end_date': self.end_date
-        }
+        return self.__dict__
     
     def matchs_list(self, filter):
+        """ retourne la liste des matchs selon un filtre ( all ou not_finished) """
         if filter == 'all':
             return self.matchs_list
-        elif filter == 'finished':
-            matchs_list_finished = []
+        elif filter == 'not_finished':
+            matchs_list_not_finished = []
             for match in self.matchs_list:
-                if match['finished'] is False:
-                    matchs_list_finished.append(match)
-            return matchs_list_finished
-
-
-if __name__ == "__main__":
-    os.system('cls')
+                if not match.finished():
+                    matchs_list_not_finished.append(match)
+            return matchs_list_not_finished
+        

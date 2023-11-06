@@ -1,0 +1,37 @@
+{
+  "GB13106": {
+    "1": {
+      "id": "ec2c469b",
+      "name": "Plonger",
+      "location": "Vincentville",
+      "description": "tournoi test",
+      "nb_rounds": 2,
+      "players_list": [
+        {
+          "id": "58d4358c",
+          "score": 0,
+          "opponents": []
+        },
+        {
+          "id": "c1d04593",
+          "score": 0,
+          "opponents": []
+        },
+        {
+          "id": "cf932a90",
+          "score": 0,
+          "opponents": []
+        },
+        {
+          "id": "935ea974",
+          "score": 0,
+          "opponents": []
+        }
+      ],
+      "rounds_list": [],
+      "act_round": 0,
+      "start_date": "",
+      "end_date": ""
+    }
+  }
+}
