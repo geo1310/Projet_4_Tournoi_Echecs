@@ -1,6 +1,5 @@
 import os
 
-
 class View:
 
     def display_menu(self, title, menu_list):
@@ -24,7 +23,20 @@ class View:
             nom = player['last_name']
             prenom = player['first_name']
             date_naissance = player['birthday']
-            print("{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15} Id : {:<10}".format(index, nom, prenom, date_naissance, id))
+            print("\n{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15} Id : {:<10}".format(index, nom, prenom, date_naissance, id))
+            index += 1
+
+    def display_players_list_classification(self, players_list, title_complement):
+        '''Affiche le classement des joueurs d'un tournoi'''
+        self.underline_title_and_cls("Classement des joueurs du Tournoi : " + title_complement)
+        index = 1
+        for player in players_list:
+            id = player[0]['id']
+            nom = player[0]['last_name']
+            prenom = player[0]['first_name']
+            date_naissance = player[0]['birthday']
+            score = player[1]
+            print("\n{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15} Score : {:<2} points".format(index, nom, prenom, date_naissance, score))
             index += 1
 
     def create_player(self, text):
@@ -101,8 +113,3 @@ class View:
 
     def display_something(self, text):
         print(text)
-
-
-if __name__ == "__main__":
-    view = View()
-    view.main_menu()

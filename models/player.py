@@ -1,6 +1,5 @@
 import os
 import secrets
-import random
 from tinydb import TinyDB, Query
 
 class Player:

@@ -1,5 +1,4 @@
 import os
-import pprint
 from faker import Faker
 from models.player import Player
 from models.tournament import Tournament

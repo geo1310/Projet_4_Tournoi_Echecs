@@ -1,5 +1,4 @@
 import random
-
 from models.match import Match
 
 class Round:
@@ -56,6 +55,6 @@ class Round:
                     players_played.add(player_1['id'])
                     players_played.add(player_2['id'])
                     break
-        print(self.matchs_list)
+        
 
         
