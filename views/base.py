@@ -20,10 +20,11 @@ class View:
         sorted_players_list = sorted(players_list, key=lambda x: x["last_name"])
         index = 1
         for player in sorted_players_list:
+            id = player['id']
             nom = player['last_name']
             prenom = player['first_name']
             date_naissance = player['birthday']
-            print("{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15}".format(index, nom, prenom, date_naissance))
+            print("{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15} Id : {:<10}".format(index, nom, prenom, date_naissance, id))
             index += 1
 
     def create_player(self, text):
@@ -42,7 +43,7 @@ class View:
         self.underline_title_and_cls("Liste des Tournois")
         index = 1
         for tournament in tournaments_list:
-            print("{:<2}- Nom : {:<10} Lieu : {:<10} Nb de Rounds : {:<10} Round en cours : {:<10} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['act_round'], tournament['start_date'], tournament['end_date']))
+            print("{:<2}- Nom : {:<15} Lieu : {:<20} Nb de Rounds : {:<10} Round en cours : {:<10} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['act_round'], tournament['start_date'], tournament['end_date']))
             index += 1
 
     def create_tournament(self):
@@ -59,10 +60,10 @@ class View:
     """ Affichage concernant les matchs """
 
     def display_match(self, player_1, player_2):
-        print(f"\n\t{player_1[0]['last_name']} {player_1[0]['first_name']}  -  {player_2[0]['last_name']} {player_2[0]['first_name']}")
+        print(f"\n\t{player_1['last_name']} {player_1['first_name']}  -  {player_2['last_name']} {player_2['first_name']}")
     
     def display_match_result(self, player_1, player_2):
-        print("Joueur 1 : {:<10} {:<10} Score : {:<5}  Joueur 2 : {:<10} {:<10} Score : {:<5}".format(player_1[0]['last_name'], player_1[0]['first_name'], player_1[1], player_2[0]['last_name'], player_2[0]['first_name'], player_2[1]))
+        print("Joueur 1 : {:<10} {:<13} Score : {:<4}-  Joueur 2 : {:<10} {:<10} Score : {:<5}".format(player_1[0]['last_name'], player_1[0]['first_name'], player_1[1], player_2[0]['last_name'], player_2[0]['first_name'], player_2[1]))
 
 
     """ Affichage divers """

@@ -7,9 +7,10 @@ from models.tournament import Tournament
 
 if __name__ == "__main__":
     os.system('cls')
-    '''
+    
     # cree un tournoi test
     nb_players = 4
+    nb_rounds = 3
     fake = Faker('fr_FR')
     tournament_name = fake.word()
     tournament_location = fake.city()
@@ -22,13 +23,15 @@ if __name__ == "__main__":
         player = Player(fake.last_name(), fake.first_name(), birthday_str)
         player.create()
         players_list.append(player.to_dict_tournament())
-    tournament = Tournament(id , tournament_name, tournament_location, 'tournoi test', 2)
+    tournament = Tournament(id , tournament_name, tournament_location, 'tournoi test', nb_rounds)
     tournament.players_list.extend(players_list)
+    print()
     print(tournament.save())
+    print()
     print(tournament)
+    
+    
     '''
-    
-    
     # recherche dans la base
     tournament = Tournament.search('id', '7f35229f')
     print(tournament)
@@ -42,5 +45,5 @@ if __name__ == "__main__":
     
     # mettre a jour un tournoi
     Tournament.db_tournaments.update(tournament_instance.to_dict(),Tournament.tournaments_query.id == tournament_instance.id)
-    
+    '''
     
