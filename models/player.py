@@ -1,5 +1,6 @@
 import os
 import secrets
+import random
 from tinydb import TinyDB, Query
 
 class Player:
@@ -17,8 +18,8 @@ class Player:
 
     def __init__(self, last_name , first_name , birthday='', score=0, opponents=None, id=None):
         
-        self.last_name = last_name.capitalize()
-        self.first_name = first_name.capitalize()
+        self.last_name = last_name.lower()
+        self.first_name = first_name.lower()
         self.birthday = birthday
         self.score = score
         self.opponents = opponents if opponents else []
@@ -50,12 +51,10 @@ class Player:
         if not search_result:
             self.id = secrets.token_hex(4)
             self.db_players.insert(self.to_dict())
-            return self.to_dict_tournament()
+            return True
         else:
-            return search_result[0]
-
-        
-       
+            self.id = search_result[0]['id']
+            return False
 
     def delete(self):
         """Supprime un joueur dans la base players.json"""
@@ -66,13 +65,11 @@ class Player:
             return f"\nLe joueur {self.first_name} {self.last_name} n'est pas dans la liste !!!\n"
 
     @staticmethod
-    def from_id(id):
-        """Trouve un joueur d'apres son id et renvoie ses donnees"""
-        search_result = Player.db_players.get(Player.player_query.id == id)
-        if search_result:
-            return search_result
-        else:
-            return None
+    def search(key, query):
+        result = Player.db_players.search((Player.player_query[key] == query))
+        if result:
+            return result[0]
+        return False
     
     @staticmethod
     def list():
@@ -84,7 +81,6 @@ class Player:
         """Retourne la liste d'instances de tous les joueurs"""
         return [Player(**data) for data in Player.db_players.all()]
         
-    
 
 
 

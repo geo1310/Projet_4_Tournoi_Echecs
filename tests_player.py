@@ -35,30 +35,36 @@ if __name__ == "__main__":
     #del_all_db()
     
     # cree une liste de joueurs
-    #bootstrap_db(8)
+    bootstrap_db(8)
     
     # cree une instance de joueur avec son id
-    id_search = '533e313d'
-    player = Player.from_id(id_search)
-    print(f"\nJoueur avec l'id {id_search} : {player}\n")
+    #id_search = '533e313d'
+    #player = Player.from_id(id_search)
+    #print(f"\nJoueur avec l'id {id_search} : {player}\n")
     
     # cree une instance de joueur
-    player = Player('briche', 'georges', '13/10/1969')
+    #player = Player('laroche', 'jean', '13/10/1969')
     
     # sauvegarde un joueur
-    print(player.create())
+    #print(player.create())
     
     # efface un joueur
     #print(player.delete())
     
     # affiche la liste des joueurs
-    print("\nListe des joueurs : \n")
-    print(Player.list())
-    print()
+    #print("\nListe des joueurs : \n")
+    #print(Player.list())
+    #print()
 
     # cree une instance de tous les joueurs de la liste
-    print("Liste des instances de joueurs : \n")
-    print(Player.list_instance())
-    print()
+    #print("Liste des instances de joueurs : \n")
+    #print(Player.list_instance())
+    #print()
+    
+    # rechercher dans la base players
+    #print(Player.search('id', '33e002ea'))
+    #print(Player.search('last_name', 'laroche'))
+
+
     
 

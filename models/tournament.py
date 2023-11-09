@@ -1,8 +1,9 @@
 import os
 import secrets
 from tinydb import TinyDB, Query
-import random
-import string
+from models.match import Match
+from models.round import Round
+from models.player import Player
 
 class Tournament:
 
@@ -18,10 +19,10 @@ class Tournament:
     db_tournaments = db_tournaments.table(NATIONAL_ID)
     tournaments_query = Query()
         
-    def __init__(self, name, location, description='', nb_rounds=4, players_list=None, rounds_list=None, act_round=0, start_date='', end_date=''):
-        self.id = secrets.token_hex(4)
-        self.name = name.capitalize()
-        self.location = location.capitalize()
+    def __init__(self, id= None, name='', location='', description='', nb_rounds=4, players_list=None, rounds_list=None, act_round=0, start_date='', end_date=''):
+        self.id = id if id else secrets.token_hex(4)
+        self.name = name.lower()
+        self.location = location.lower()
         self.description = description
         if not isinstance(nb_rounds, int):
             if nb_rounds.isdigit():
@@ -42,14 +43,22 @@ class Tournament:
     def to_dict(self):
         return self.__dict__
     
-    def create(self):
-        if not self.db_tournaments.search((self.tournaments_query.name == self.name) & (self.tournaments_query.location == self.location)):
+    def save(self):
+        result_tournament = self.db_tournaments.search(self.tournaments_query.id == self.id)
+        if not result_tournament:
             self.db_tournaments.insert(self.to_dict())
             return f"\nLe tournoi {self.name} de {self.location} a bien été enregistré."
         else:
-            self.db_tournaments.update(self.to_dict())
+            self.db_tournaments.update(self.to_dict(), self.tournaments_query.id == self.id)
             return f"\nLe tournoi {self.name} de {self.location} a été mis à jour !!!"
 
+
+    @staticmethod
+    def search(key, query):
+        result = Tournament.db_tournaments.search((Tournament.tournaments_query[key] == query))
+        if result:
+            return result[0]
+        return False
     
     @staticmethod
     def list(filter):

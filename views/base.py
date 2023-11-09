@@ -48,12 +48,13 @@ class View:
     def create_tournament(self):
         '''Demande les donnees pour la création d'un tournoi'''
         self.underline_title_and_cls("Création et lancement d'un Tournoi")
+        id = None
         name = input("Nom du Tournoi : ")
         location = input("Lieu du Tournoi : ")
         description = input("Description : ")
         nb_rounds = input("Nombre de Tours : ")
 
-        return name, location, description, nb_rounds
+        return id, name, location, description, nb_rounds
     
     """ Affichage concernant les matchs """
 

@@ -1,5 +1,6 @@
-import sys
+
 import random
+import sys
 import datetime
 from models.player import Player
 from models.tournament import Tournament
@@ -16,6 +17,16 @@ class Controller:
         self.view = view
 
     def run(self):
+        
+        self.main_menu()
+
+
+    '''
+    Gestion des Menus
+    
+    ''' 
+
+    def main_menu(self):
         # menu principal
         menu_items = ["Menu principal du Club d'echec : ", {
             "Tournois": self.tournaments_menu,
@@ -25,17 +36,13 @@ class Controller:
         }]
         self.run_menu(menu_items)
         
-    '''
-    Gestion des Menus
-    
-    '''
     def tournaments_menu(self):
         # menu tournois
         menu_items = ["Menu Tournois", {
             "Afficher la liste des Tournois": self.tournaments_list,
             "Créer/Lancer un Tournoi": self.create_tournament,
             "Continuer un tournoi en cours": self.continue_tournament,
-            "Retour au menu principal": self.run
+            "Retour au menu principal": self.main_menu
         }]
         self.run_menu(menu_items)
     
@@ -45,7 +52,7 @@ class Controller:
             "Afficher la liste des Joueurs": self.players_list,
             "Ajouter un Joueur": self.add_player,
             "Supprimer un Joueur ": self.del_player,
-            "Retour au menu principal": self.run
+            "Retour au menu principal": self.main_menu
         }]
         self.run_menu(menu_items)
 
@@ -56,9 +63,12 @@ class Controller:
             "Liste des Tournois": self.tournaments_list,
             "Liste des Joueurs d'un Tournoi ": self.players_tournament,
             "Liste des Tours et Matchs d'un Tournoi ": self.rounds_matches_tournament,
-            "Retour au menu principal": self.run
+            "Retour au menu principal": self.main_menu
         }]
         self.run_menu(menu_items)
+            
+    def quit_menu(self):
+        sys.exit()
 
     def run_menu(self, menu_items):
         ''' gestion de l'affichage du menu et du choix utilisateur par rapport à menu_items'''
@@ -80,12 +90,8 @@ class Controller:
                         menu_items[1][menu[1]]()
             else:
                 self.view.invalid_choice()
-                self.view.prompt_wait_enter()
-            
-    def quit_menu(self):
-        self.view.display_something("\nAu Revoir !!!\n")
-        sys.exit()
-
+                self.view.prompt_wait_enter() 
+    
     '''
     Gestion des Joueurs
 
@@ -101,8 +107,11 @@ class Controller:
         player = self.view.create_player("Ajout d'un Joueur dans la base de données (players.json)")
         if player[0] != '' and player[1] != '':
             player_instance = Player(player[0], player[1], player[2])
-            self.view.display_something(player_instance.save())
-        else:
+            if player_instance.create():
+                self.view.display_something('Le joueur a bien été ajouté.')
+            else:
+                self.view.display_something('Le joueur est deja dans la liste des joueurs.')
+        else:        
             self.view.display_something("\nVeuillez renseigner au minimum le nom et le prénom du joueur.")
         self.view.prompt_wait_enter()
 
@@ -132,18 +141,15 @@ class Controller:
         while True:
             new_player = Player(*self.view.create_player(f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location}. "))
             if new_player.last_name != "" and new_player.first_name !="":
-                self.view.display_something(new_player.save())
-                tournament.players_list.append(new_player.to_json_tournament())
-                
+                new_player.create()
+                tournament.players_list.append(new_player.to_dict_tournament())
                 index += 1
             elif len(tournament.players_list) % 2 == 0 and len(tournament.players_list) != 0:
                 break
             else:
                 self.view.display_something("\nLe nombre de joueurs d'un tournoi doit etre pair et au moins de deux joueurs !!!")
                 self.view.prompt_wait_enter()
-
-        # sauvegarde du tournoi
-        self.view.display_something(tournament.save())
+        tournament.save()
         if self.view.ask_question("Voulez-vous démarrer le tournoi "):
             self.start_tournament(tournament)
     
@@ -177,20 +183,15 @@ class Controller:
         if tournament.start_date == "":
             tournament.start_date = Controller.DATE
             tournament.act_round = 1
-        
-        # verifie si le round et ses matchs sont deja crees
-        is_round = False
-        for round in tournament.rounds_list:
-            if round['number'] == tournament.act_round:
-                is_round = True
-                act_round = Round(**round)
-                break
-        if not is_round:
-            act_round = self.create_round(tournament.act_round, players_list)
-            tournament.rounds_list.append(act_round.to_json())
-        print(tournament)
+
+        act_round = Round(tournament.act_round)
+        act_round.create_matchs_list(players_list)
+        tournament.rounds_list.append(act_round.to_dict())
         tournament.save()
-        self.run_tournament(tournament)
+
+        self.view.prompt_wait_enter()
+        
+    
         
     def run_tournament(self, tournament):
         """ Execution d'un tournoi """
@@ -248,42 +249,6 @@ class Controller:
         self.view.prompt_wait_enter()
         self.run()
 
-    def create_round(self, number, players_list):
-        """ cree un round et le renvoie"""
-        
-        # creation du round
-        round = Round(number)
-        if number == 1:
-            # creation de la liste des matchs ( joueurs choisis au hasard)
-            random.shuffle(players_list)
-
-        # liste des joueurs ayant deja joués
-        players_played = set()
-        
-        for i in range(len(players_list)):
-            player_1 = players_list[i]
-            if player_1['id_player'] in players_played:
-                continue
-            for j in range(i + 1, len(players_list)):
-                player_2 = players_list[j]
-                if player_2['id_player'] in players_played:
-                    continue
-
-                # Vérifie si les joueurs n'ont pas déjà joué ensemble
-                if player_2['id_player'] not in player_1['opponents']:
-                    # Crée un match et l ajoute à la liste des matchs
-                    match = Match([player_1, 0], [player_2, 0])
-                    round.matchs_list.append(match.to_json())
-
-                    # Mise à jour de la liste des adversaires des joueurs
-                    player_1['opponents'].append(player_2['id_player'])
-                    player_2['opponents'].append(player_1['id_player'])
-                    # Mise à jour de la liste des joueurs ayant deja joués
-                    players_played.add(player_1['id_player'])
-                    players_played.add(player_2['id_player'])
-                    break
-                
-        return round
 
     '''
     Gestion des Rapports
