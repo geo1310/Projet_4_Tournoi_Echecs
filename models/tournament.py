@@ -1,9 +1,6 @@
 import os
 import secrets
 from tinydb import TinyDB, Query
-from models.match import Match
-from models.round import Round
-from models.player import Player
 
 class Tournament:
 
@@ -16,7 +13,7 @@ class Tournament:
     if not os.path.exists(FOLDER_TOURNAMENTS):
         os.makedirs(FOLDER_TOURNAMENTS)
     db_tournaments = TinyDB(FULL_PATH_TOURNAMENTS)
-    db_tournaments = db_tournaments.table(NATIONAL_ID)
+    db_tournaments = db_tournaments.table('tournaments')
     tournaments_query = Query()
         
     def __init__(self, id= None, name='', location='', description='', nb_rounds=4, players_list=None, rounds_list=None, act_round=0, start_date='', end_date=''):

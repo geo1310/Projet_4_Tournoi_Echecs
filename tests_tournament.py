@@ -8,7 +8,7 @@ if __name__ == "__main__":
     os.system('cls')
     
     # cree un tournoi test
-    nb_players = 4
+    nb_players = 6
     nb_rounds = 3
     fake = Faker('fr_FR')
     tournament_name = fake.word()

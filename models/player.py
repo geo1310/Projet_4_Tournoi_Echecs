@@ -13,6 +13,7 @@ class Player:
     if not os.path.exists(FOLDER_PLAYERS):
         os.makedirs(FOLDER_PLAYERS)
     db_players = TinyDB(FULL_PATH_PLAYERS)
+    db_players = db_players.table('players')
     player_query = Query()
 
     def __init__(self, last_name , first_name , birthday='', score=0, opponents=None, id=None):
