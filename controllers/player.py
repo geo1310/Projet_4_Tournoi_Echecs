@@ -17,7 +17,7 @@ class PlayerManage:
 
     def add_player(self):
         # ajoute un joueur
-        player = self.view.create_player("Ajout d'un Joueur dans la base de données (players.json)")
+        player = self.view.create_player("Ajout d'un Joueur dans la base de données ( champs vide pour revenir au menu)")
         if player[0] != '' and player[1] != '':
             player_instance = Player(player[0], player[1], player[2])
             if player_instance.create():
@@ -31,6 +31,9 @@ class PlayerManage:
     def del_player(self):
         # supprime un joueur
         player = self.view.create_player("Suppression d'un Joueur dans la base de données (players.json)")
-        player_instance = Player(player[0], player[1], player[2])
-        self.view.display_something(player_instance.delete())
+        if player[0] != '' and player[1] != '':
+            player_instance = Player(player[0], player[1], player[2])
+            self.view.display_something(player_instance.delete())
+        else:        
+            self.view.display_something("\nVeuillez renseigner au minimum le nom et le prénom du joueur.")
         self.view.prompt_wait_enter()

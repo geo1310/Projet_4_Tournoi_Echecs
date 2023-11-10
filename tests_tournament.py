@@ -8,8 +8,8 @@ if __name__ == "__main__":
     os.system('cls')
     
     # cree un tournoi test
-    nb_players = 6
-    nb_rounds = 3
+    nb_players = 8
+    nb_rounds = 4
     fake = Faker('fr_FR')
     tournament_name = fake.word()
     tournament_location = fake.city()
@@ -19,7 +19,9 @@ if __name__ == "__main__":
     for _ in range(nb_players):
         birthday = fake.date_of_birth(minimum_age=18, maximum_age=65)
         birthday_str = birthday.strftime("%d/%m/%Y")
-        player = Player(fake.last_name(), fake.first_name(), birthday_str)
+        last_name = fake.last_name()
+        first_name = fake.last_name()
+        player = Player(last_name, first_name, birthday_str)
         player.create()
         players_list.append(player.to_dict_tournament())
     tournament = Tournament(id , tournament_name, tournament_location, 'tournoi test', nb_rounds)

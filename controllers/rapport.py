@@ -45,23 +45,24 @@ class RapportManage:
     def rounds_matches_tournament(self):
         # affiche les rounds et les matchs d'un tournoi
         tournament_choice = self.choice_tournament()
-        rounds_list = tournament_choice['rounds_list']
-        self.view.underline_title_and_cls(f"Liste des Rounds et des Matchs : Tournoi {tournament_choice['name']} de {tournament_choice['location']} du {tournament_choice['start_date']} au {tournament_choice['end_date']}")
-        for round in rounds_list:
-            self.view.display_something(f"\n\nRound {round['number']}  Date de début : {round['start_date']}  Date de fin : {round['end_date']}\n")
-            matchs_list = round['matchs_list']
-            for match in matchs_list:
-                player_1 = Player.search("id", match['player_1'][0]['id']), match['player_1'][1]
-                player_2 = Player.search("id", match['player_2'][0]['id']), match['player_2'][1]
-                self.view.display_match_result(player_1, player_2)
-        self.view.prompt_wait_enter()
+        if tournament_choice:
+            rounds_list = tournament_choice['rounds_list']
+            self.view.underline_title_and_cls(f"Liste des Rounds et des Matchs : Tournoi {tournament_choice['name']} de {tournament_choice['location']} du {tournament_choice['start_date']} au {tournament_choice['end_date']}")
+            for round in rounds_list:
+                self.view.display_something(f"\n\nRound {round['number']}  Date de début : {round['start_date']}  Date de fin : {round['end_date']}\n")
+                matchs_list = round['matchs_list']
+                for match in matchs_list:
+                    player_1 = Player.search("id", match['player_1'][0]['id']), match['player_1'][1]
+                    player_2 = Player.search("id", match['player_2'][0]['id']), match['player_2'][1]
+                    self.view.display_match_result(player_1, player_2)
+            self.view.prompt_wait_enter()
 
     def choice_tournament(self): 
         # choisi un tournoi dans la liste des tournois et le retourne
         tournaments_list = Tournament.list('all')
         self.view.display_tournaments_list(tournaments_list)
         if tournaments_list != []:
-            choice = self.view.return_choice("Entrer le Numéro de tournoi : ")
+            choice = self.view.return_choice("\nEntrer le Numéro de tournoi : ")
             try:
                 choice = int(choice)
                 tournament_choice = tournaments_list[choice-1]

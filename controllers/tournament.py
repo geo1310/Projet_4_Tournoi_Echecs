@@ -31,7 +31,7 @@ class TournamentManage:
             # ajout des joueurs au tournoi
             index = 1
             while True:
-                new_player = Player(*self.view.create_player(f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location}. "))
+                new_player = Player(*self.view.create_player(f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location} ( Valider des champs vides pour terminer)"))
                 if new_player.last_name != "" and new_player.first_name !="":
                     new_player.create()
                     tournament.players_list.append(new_player.to_dict_tournament())
@@ -51,7 +51,7 @@ class TournamentManage:
         if tournaments_list_not_finished != []:
             self.view.underline_title_and_cls("Liste des Tournois à effectuer :")
             self.view.display_tournaments_list(tournaments_list_not_finished)
-            choice = self.view.return_choice("Entrer le Numéro de tournoi que vous souhaitez lancer : ")
+            choice = self.view.return_choice("\nEntrer le Numéro de tournoi que vous souhaitez lancer : ")
             try:
                 choice = int(choice)
                 tournament_choice = tournaments_list_not_finished[choice-1]
@@ -85,8 +85,8 @@ class TournamentManage:
         act_round_number = act_tournament.act_round
         stop_tournament = False
 
-        self.view.underline_title_and_cls(f"{act_tournament.name} de {act_tournament.location} en {act_tournament.nb_rounds} Rounds , commencé le {act_tournament.start_date}")
-        self.view.display_something(f"\nRound : {act_round_number}")
+        self.view.underline_title_and_cls(f"Tournoi : {act_tournament.name} de {act_tournament.location} en {act_tournament.nb_rounds} Rounds , commencé le {act_tournament.start_date}")
+        self.view.display_something(f"Round : {act_round_number}")
 
         # instancation et lancement du round en cours
         for i, round_enum in enumerate(rounds_list):
@@ -111,12 +111,13 @@ class TournamentManage:
                 # validation d'un match
                 if result.isdigit() and (result == '1' or result == '0' or result == '2'):
                     act_match.result(int(result))
-                    rounds_list[i] = act_round.to_dict()
-                     # tri les joueurs par leurs scores
+                    act_tournament.update_score_players(act_match)
+                    act_tournament.rounds_list[i] = act_round.to_dict()
+                    # tri les joueurs par leurs scores
                     act_tournament.players_list = sorted(act_tournament.players_list, key=lambda x: x["score"], reverse=True)
                     # enregistrement des resultats
                     act_tournament.save()
-                    self.view.prompt_wait_enter()
+                    
                 else:
                     stop_tournament = True
                     break

@@ -17,33 +17,29 @@ class View:
         '''Affiche la liste des joueurs à partir d'une liste par ordre alphabétique (nom)'''
         self.underline_title_and_cls("Liste des Joueurs : " + title_complement)
         sorted_players_list = sorted(players_list, key=lambda x: x["last_name"])
-        index = 1
-        for player in sorted_players_list:
+        for index, player in enumerate(sorted_players_list, start=1):
             id = player['id']
             nom = player['last_name']
             prenom = player['first_name']
             date_naissance = player['birthday']
-            print("\n{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15} Id : {:<10}".format(index, nom, prenom, date_naissance, id))
-            index += 1
+            print("{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15} Id : {:<10}".format(index, nom, prenom, date_naissance, id))
 
     def display_players_list_classification(self, players_list, title_complement):
         '''Affiche le classement des joueurs d'un tournoi'''
         self.underline_title_and_cls("Classement des joueurs du Tournoi : " + title_complement)
-        index = 1
-        for player in players_list:
+        for index, player in enumerate(players_list, start=1):
             id = player[0]['id']
             nom = player[0]['last_name']
             prenom = player[0]['first_name']
             date_naissance = player[0]['birthday']
             score = player[1]
-            print("\n{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15} Score : {:<2} points".format(index, nom, prenom, date_naissance, score))
-            index += 1
+            print("{:<2} - Nom : {:<15} Prénom : {:<15} Date de Naissance : {:<15} Score : {:<4} points".format(index, nom, prenom, date_naissance, score))
 
     def create_player(self, text):
         '''Demande les coordonnées d'un joueur'''
         self.underline_title_and_cls(text)
-        last_name = input("Nom du joueur : ")
-        first_name = input("Prénom du joueur : ")
+        last_name = input("Nom du joueur ( requis ): ")
+        first_name = input("Prénom du joueur ( requis ): ")
         birthday = input("Date de naissance du joueur : ")
 
         return last_name, first_name, birthday
@@ -53,10 +49,8 @@ class View:
     def display_tournaments_list(self, tournaments_list):
         '''Affiche la liste des tournois à partir d'une liste'''
         self.underline_title_and_cls("Liste des Tournois")
-        index = 1
-        for tournament in tournaments_list:
-            print("{:<2}- Nom : {:<15} Lieu : {:<20} Nb de Rounds : {:<10} Round en cours : {:<10} Date de début : {:<15} Date de fin : {:<15}\n".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], tournament['act_round'], tournament['start_date'], tournament['end_date']))
-            index += 1
+        for index, tournament in enumerate(tournaments_list, start=1):
+             print("{:<2}- Nom : {:<15} Lieu : {:<15} Nb de Rounds : {:<5} Nb de Joueurs : {:<5} Round en cours : {:<5} Date de début : {:<15} Date de fin : {:<15}".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], len(tournament['players_list']), tournament['act_round'], tournament['start_date'], tournament['end_date']))            
 
     def create_tournament(self):
         '''Demande les donnees pour la création d'un tournoi'''
@@ -105,7 +99,7 @@ class View:
     
     def underline_title_and_cls(self, title):
         '''efface l'ecran et affiche le titre souligné'''
-        os.system("cls")
+        self.clear_screen()
         # affichage du titre du menu souligné
         souligne = '-'*len(title) + '\n'
         print('\n' + title)
@@ -113,3 +107,11 @@ class View:
 
     def display_something(self, text):
         print(text)
+
+    def clear_screen(self):
+        # detecte le systeme d exploitation
+        os_name = os.name
+        if os_name == 'nt':  # Windows
+            os.system("cls")
+        elif os_name == 'posix':  # Mac, Linux, Unix
+            os.system("clear")

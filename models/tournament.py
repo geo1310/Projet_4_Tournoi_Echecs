@@ -48,7 +48,13 @@ class Tournament:
         else:
             self.db_tournaments.update(self.to_dict(), self.tournaments_query.id == self.id)
             return f"\nLe tournoi {self.name} de {self.location} a été mis à jour !!!"
-
+        
+    def update_score_players(self, match):
+        for player in self.players_list:
+            if player['id'] == match.player_1[0]['id']:
+                player['score'] += match.player_1[1]
+            elif player['id'] == match.player_2[0]['id']:
+                player['score'] += match.player_2[1]
 
     @staticmethod
     def search(key, query):

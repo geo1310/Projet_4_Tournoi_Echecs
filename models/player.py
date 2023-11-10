@@ -41,8 +41,15 @@ class Player:
         """ Crée un dict. pour la players_list des tournois """
         return {
             "id": self.id,
-            "score": self.score,
-            "opponents": self.opponents
+            "opponents": self.opponents,
+            "score": self.score
+        }
+    
+    def to_dict_match(self):
+        """ Crée un dict. pour la players des matchs """
+        return {
+            "id": self.id,
+            "opponents": self.opponents,
         }
 
     def create(self):
