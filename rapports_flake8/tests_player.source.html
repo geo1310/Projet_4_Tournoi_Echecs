@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>tests_player.py - flake8 annotated source</title>
+      <meta http-equiv="Content-Type" value="text/html; charset=UTF-8">
+      <link rel="stylesheet" href="styles.css">
+   </head>
+   <body>
+      <div id="masthead" class="sev-1"></div>
+      <div id="page">
+         <h1>
+            <a href="tests_player.report.html">
+               <img src="back.svg" alt="&#x2B05;">
+               tests_player.py source
+            </a>
+         </h1>
+
+         <div id="doc">
+            <div id="l1"
+               class="code sev- "><tt><i>1</i> <span class="kn">import</span> <span class="nn">os</span></tt>
+            </div>
+            <div id="l2"
+               class="code sev- "><tt><i>2</i> <span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span></tt>
+            </div>
+            <div id="l3"
+               class="code sev-1  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-1">
+                        F401
+                     </span>
+                     'datetime.datetime' imported but unused</li>
+               
+               </ul><tt><i>3</i> <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span></tt>
+            </div>
+            <div id="l4"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E271
+                     </span>
+                     Multiple spaces after keyword</li>
+               
+               </ul><tt><i>4</i> <span class="kn">from</span>  <span class="nn">models.player</span> <span class="kn">import</span> <span class="n">Player</span></tt>
+            </div>
+            <div id="l5"
+               class="code sev- "><tt><i>5</i> &nbsp;</tt>
+            </div>
+            <div id="l6"
+               class="code sev- "><tt><i>6</i> &nbsp;</tt>
+            </div>
+            <div id="l7"
+               class="code sev- "><tt><i>7</i> <span class="k">def</span> <span class="nf">del_all_db</span><span class="p">():</span></tt>
+            </div>
+            <div id="l8"
+               class="code sev- "><tt><i>8</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;vide players.json&quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l9"
+               class="code sev- "><tt><i>9</i>     <span class="n">Player</span><span class="o">.</span><span class="n">db_players</span><span class="o">.</span><span class="n">truncate</span><span class="p">()</span></tt>
+            </div>
+            <div id="l10"
+               class="code sev- "><tt><i>10</i> &nbsp;</tt>
+            </div>
+            <div id="l11"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E302
+                     </span>
+                     Expected 2 blank lines, found 1</li>
+               
+               </ul><tt><i>11</i> <span class="k">def</span> <span class="nf">bootstrap_db</span><span class="p">(</span><span class="n">nb_players</span><span class="p">):</span></tt>
+            </div>
+            <div id="l12"
+               class="code sev- "><tt><i>12</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot; crée une liste de joueurs au hasard &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l13"
+               class="code sev- "><tt><i>13</i>     <span class="n">players</span> <span class="o">=</span> <span class="p">[]</span></tt>
+            </div>
+            <div id="l14"
+               class="code sev- "><tt><i>14</i>     <span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">(</span><span class="s1">&#39;fr_FR&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l15"
+               class="code sev- "><tt><i>15</i>     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_players</span><span class="p">):</span></tt>
+            </div>
+            <div id="l16"
+               class="code sev- "><tt><i>16</i>         <span class="n">birthday</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">date_of_birth</span><span class="p">(</span><span class="n">minimum_age</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">maximum_age</span><span class="o">=</span><span class="mi">65</span><span class="p">)</span></tt>
+            </div>
+            <div id="l17"
+               class="code sev- "><tt><i>17</i>         <span class="n">birthday_str</span> <span class="o">=</span> <span class="n">birthday</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l18"
+               class="code sev- "><tt><i>18</i>         <span class="n">player</span> <span class="o">=</span> <span class="p">{</span></tt>
+            </div>
+            <div id="l19"
+               class="code sev- "><tt><i>19</i>             <span class="s1">&#39;last_name&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">last_name</span><span class="p">(),</span></tt>
+            </div>
+            <div id="l20"
+               class="code sev- "><tt><i>20</i>             <span class="s1">&#39;first_name&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">first_name</span><span class="p">(),</span></tt>
+            </div>
+            <div id="l21"
+               class="code sev- "><tt><i>21</i>             <span class="s1">&#39;birthday&#39;</span><span class="p">:</span> <span class="n">birthday_str</span></tt>
+            </div>
+            <div id="l22"
+               class="code sev- "><tt><i>22</i>         <span class="p">}</span></tt>
+            </div>
+            <div id="l23"
+               class="code sev- "><tt><i>23</i>         <span class="nb">print</span><span class="p">(</span><span class="n">player</span><span class="p">)</span></tt>
+            </div>
+            <div id="l24"
+               class="code sev- "><tt><i>24</i>         <span class="n">players</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">player</span><span class="p">)</span></tt>
+            </div>
+            <div id="l25"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>25</i>         </tt>
+            </div>
+            <div id="l26"
+               class="code sev- "><tt><i>26</i>     <span class="k">for</span> <span class="n">player_test</span> <span class="ow">in</span> <span class="n">players</span><span class="p">:</span></tt>
+            </div>
+            <div id="l27"
+               class="code sev- "><tt><i>27</i>         <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="o">**</span><span class="n">player_test</span><span class="p">)</span></tt>
+            </div>
+            <div id="l28"
+               class="code sev- "><tt><i>28</i>         <span class="nb">print</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">create</span><span class="p">())</span></tt>
+            </div>
+            <div id="l29"
+               class="code sev- "><tt><i>29</i> &nbsp;</tt>
+            </div>
+            <div id="l30"
+               class="code sev- "><tt><i>30</i> &nbsp;</tt>
+            </div>
+            <div id="l31"
+               class="code sev- "><tt><i>31</i> <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span></tt>
+            </div>
+            <div id="l32"
+               class="code sev- "><tt><i>32</i>     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l33"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>33</i>     </tt>
+            </div>
+            <div id="l34"
+               class="code sev- "><tt><i>34</i>     <span class="c1"># efface tous les joueurs de la base</span></tt>
+            </div>
+            <div id="l35"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>35</i>     <span class="c1">#del_all_db()</span></tt>
+            </div>
+            <div id="l36"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>36</i>     </tt>
+            </div>
+            <div id="l37"
+               class="code sev- "><tt><i>37</i>     <span class="c1"># cree une liste de joueurs</span></tt>
+            </div>
+            <div id="l38"
+               class="code sev- "><tt><i>38</i>     <span class="n">bootstrap_db</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span></tt>
+            </div>
+            <div id="l39"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>39</i>     </tt>
+            </div>
+            <div id="l40"
+               class="code sev- "><tt><i>40</i>     <span class="c1"># cree une instance de joueur avec son id</span></tt>
+            </div>
+            <div id="l41"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>41</i>     <span class="c1">#id_search = &#39;533e313d&#39;</span></tt>
+            </div>
+            <div id="l42"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>42</i>     <span class="c1">#player = Player.from_id(id_search)</span></tt>
+            </div>
+            <div id="l43"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>43</i>     <span class="c1">#print(f&quot;\nJoueur avec l&#39;id {id_search} : {player}\n&quot;)</span></tt>
+            </div>
+            <div id="l44"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>44</i>     </tt>
+            </div>
+            <div id="l45"
+               class="code sev- "><tt><i>45</i>     <span class="c1"># cree une instance de joueur</span></tt>
+            </div>
+            <div id="l46"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>46</i>     <span class="c1">#player = Player(&#39;laroche&#39;, &#39;jean&#39;, &#39;13/10/1969&#39;)</span></tt>
+            </div>
+            <div id="l47"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>47</i>     </tt>
+            </div>
+            <div id="l48"
+               class="code sev- "><tt><i>48</i>     <span class="c1"># sauvegarde un joueur</span></tt>
+            </div>
+            <div id="l49"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>49</i>     <span class="c1">#print(player.create())</span></tt>
+            </div>
+            <div id="l50"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>50</i>     </tt>
+            </div>
+            <div id="l51"
+               class="code sev- "><tt><i>51</i>     <span class="c1"># efface un joueur</span></tt>
+            </div>
+            <div id="l52"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>52</i>     <span class="c1">#print(player.delete())</span></tt>
+            </div>
+            <div id="l53"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>53</i>     </tt>
+            </div>
+            <div id="l54"
+               class="code sev- "><tt><i>54</i>     <span class="c1"># affiche la liste des joueurs</span></tt>
+            </div>
+            <div id="l55"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>55</i>     <span class="c1">#print(&quot;\nListe des joueurs : \n&quot;)</span></tt>
+            </div>
+            <div id="l56"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>56</i>     <span class="c1">#print(Player.list())</span></tt>
+            </div>
+            <div id="l57"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>57</i>     <span class="c1">#print()</span></tt>
+            </div>
+            <div id="l58"
+               class="code sev- "><tt><i>58</i> &nbsp;</tt>
+            </div>
+            <div id="l59"
+               class="code sev- "><tt><i>59</i>     <span class="c1"># cree une instance de tous les joueurs de la liste</span></tt>
+            </div>
+            <div id="l60"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>60</i>     <span class="c1">#print(&quot;Liste des instances de joueurs : \n&quot;)</span></tt>
+            </div>
+            <div id="l61"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>61</i>     <span class="c1">#print(Player.list_instance())</span></tt>
+            </div>
+            <div id="l62"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>62</i>     <span class="c1">#print()</span></tt>
+            </div>
+            <div id="l63"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>63</i>     </tt>
+            </div>
+            <div id="l64"
+               class="code sev- "><tt><i>64</i>     <span class="c1"># rechercher dans la base players</span></tt>
+            </div>
+            <div id="l65"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>65</i>     <span class="c1">#print(Player.search(&#39;id&#39;, &#39;33e002ea&#39;))</span></tt>
+            </div>
+            <div id="l66"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        E265
+                     </span>
+                     Block comment should start with '# '</li>
+               
+               </ul><tt><i>66</i>     <span class="c1">#print(Player.search(&#39;last_name&#39;, &#39;laroche&#39;))</span></tt>
+            </div>
+            <div id="l67"
+               class="code sev- "><tt><i>67</i> &nbsp;</tt>
+            </div>
+            <div id="l68"
+               class="code sev- "><tt><i>68</i> &nbsp;</tt>
+            </div>
+            <div id="l69"
+               class="code sev-2  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-2">
+                        W293
+                     </span>
+                     Blank line contains whitespace</li>
+               
+               </ul><tt><i>69</i>     </tt>
+            </div>
+            
+         </div>
+      </div>
+   </body>
+</html>
