@@ -1,5 +1,6 @@
 import os
 
+
 class View:
 
     def display_menu(self, title, menu_list):
@@ -10,11 +11,14 @@ class View:
             print(f"\t{menu[0]} - {menu[1]}")
         choice = input("\nchoix :")
         return choice
-   
+
     """ Affichage concernant les joueurs """
 
     def display_players_list(self, players_list, title_complement=''):
-        '''Affiche la liste des joueurs à partir d'une liste par ordre alphabétique (nom)'''
+        '''
+            Affiche la liste des joueurs à partir d'une liste
+            par ordre alphabétique (nom)
+        '''
         self.underline_title_and_cls("Liste des Joueurs : " + title_complement)
         sorted_players_list = sorted(players_list, key=lambda x: x["last_name"])
         for index, player in enumerate(sorted_players_list, start=1):
@@ -50,7 +54,8 @@ class View:
         '''Affiche la liste des tournois à partir d'une liste'''
         self.underline_title_and_cls("Liste des Tournois")
         for index, tournament in enumerate(tournaments_list, start=1):
-             print("{:<2}- Nom : {:<15} Lieu : {:<15} Nb de Rounds : {:<5} Nb de Joueurs : {:<5} Round en cours : {:<5} Date de début : {:<15} Date de fin : {:<15}".format(index, tournament['name'], tournament['location'], tournament['nb_rounds'], len(tournament['players_list']), tournament['act_round'], tournament['start_date'], tournament['end_date']))            
+             print("{:<2}- Nom : {:<15} Lieu : {:<15} Date de début : {:<14} Date de fin : {:<15}".format(index, tournament['name'], tournament['location'], tournament['start_date'], tournament['end_date']))            
+             print("    Description : {:<30} Nb de Rounds : {:<15} Nb de Joueurs : {:<5} Round en cours : {:<5}\n".format(tournament['description'], tournament['nb_rounds'], len(tournament['players_list']), tournament['act_round'] ))            
 
     def create_tournament(self):
         '''Demande les donnees pour la création d'un tournoi'''

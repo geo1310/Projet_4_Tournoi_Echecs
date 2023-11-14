@@ -1,5 +1,4 @@
 import datetime
-import sys
 from models.tournament import Tournament
 from models.player import Player
 from models.round import Round
@@ -9,14 +8,14 @@ from models.match import Match
 class TournamentManage:
     '''
         Gestion des Tournois
-   
+
     '''
 
     DATE = datetime.date.today().strftime("%d/%m/%Y")
 
     def __init__(self, view):
         self.view = view
-        
+
     def tournaments_list(self):
         # affiche la liste des tournois
         tournaments_list = Tournament.list('all')
@@ -32,26 +31,32 @@ class TournamentManage:
             index = 1
             while True:
                 new_player = Player(*self.view.create_player(f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location} ( Valider des champs vides pour terminer)"))
-                if new_player.last_name != "" and new_player.first_name !="":
+                if new_player.last_name != "" and new_player.first_name != "":
                     new_player.create()
                     tournament.players_list.append(new_player.to_dict_tournament())
                     index += 1
                 elif len(tournament.players_list) % 2 == 0 and len(tournament.players_list) != 0:
                     break
                 else:
-                    self.view.display_something("\nLe nombre de joueurs d'un tournoi doit etre pair et au moins de deux joueurs !!!")
+                    self.view.display_something(
+                        "\nLe nombre de joueurs d'un tournoi doit etre pair !!"
+                    )
                     self.view.prompt_wait_enter()
             tournament.save()
             if self.view.ask_question("Voulez-vous démarrer le tournoi "):
                 self.start_tournament(tournament)
-    
+
     def continue_tournament(self):
         # choix d'un tournoi à commencer parmis les tournois non finis
         tournaments_list_not_finished = Tournament.list('not_finished')
         if tournaments_list_not_finished != []:
-            self.view.underline_title_and_cls("Liste des Tournois à effectuer :")
+            self.view.underline_title_and_cls(
+                "Liste des Tournois à effectuer :"
+            )
             self.view.display_tournaments_list(tournaments_list_not_finished)
-            choice = self.view.return_choice("\nEntrer le Numéro de tournoi que vous souhaitez lancer : ")
+            choice = self.view.return_choice(
+                "\nEntrer le Numéro de tournoi que vous souhaitez lancer : "
+            )
             try:
                 choice = int(choice)
                 tournament_choice = tournaments_list_not_finished[choice-1]
@@ -66,7 +71,7 @@ class TournamentManage:
 
     def start_tournament(self, act_tournament):
         ''' lancement d'un tournoi '''
-        
+
         # verifie si le tournoi n'est pas encore commencé
         if act_tournament.start_date == "":
             act_tournament.start_date = TournamentManage.DATE
@@ -75,10 +80,10 @@ class TournamentManage:
 
         # verifie si le round est deja dans la base ou le cree
         if not any(round_info["number"] == act_tournament.act_round for round_info in act_tournament.rounds_list):
-             act_round = Round(act_tournament.act_round)
-             act_round.create_matchs_list(act_tournament.players_list)
-             act_tournament.rounds_list.append(act_round.to_dict())
-             act_tournament.save()
+            act_round = Round(act_tournament.act_round)
+            act_round.create_matchs_list(act_tournament.players_list)
+            act_tournament.rounds_list.append(act_round.to_dict())
+            act_tournament.save()
 
         # exectution du tournoi
         rounds_list = act_tournament.rounds_list
@@ -117,7 +122,6 @@ class TournamentManage:
                     act_tournament.players_list = sorted(act_tournament.players_list, key=lambda x: x["score"], reverse=True)
                     # enregistrement des resultats
                     act_tournament.save()
-                    
                 else:
                     stop_tournament = True
                     break
@@ -135,10 +139,3 @@ class TournamentManage:
                 self.view.display_something("\nLe Tournoi est fini !!!")
                 self.view.prompt_wait_enter()
                 return None
-        
-        
-        
-        
-        
-        
-        

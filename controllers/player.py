@@ -1,5 +1,6 @@
 from models.player import Player
 
+
 class PlayerManage:
     '''
     Gestion des Joueurs
@@ -8,7 +9,7 @@ class PlayerManage:
 
     def __init__(self, view):
         self.view = view
-        
+
     def players_list(self):
         # affiche la liste des joueurs
         players_list = Player.list()
@@ -17,7 +18,9 @@ class PlayerManage:
 
     def add_player(self):
         # ajoute un joueur
-        player = self.view.create_player("Ajout d'un Joueur dans la base de données ( champs vide pour revenir au menu)")
+        player = self.view.create_player(
+            "Ajout d'un Joueur dans la base de données ( champs vide pour revenir au menu)"
+            )
         if player[0] != '' and player[1] != '':
             player_instance = Player(player[0], player[1], player[2])
             if player_instance.create():

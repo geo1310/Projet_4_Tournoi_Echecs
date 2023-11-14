@@ -2,6 +2,7 @@ import os
 import secrets
 from tinydb import TinyDB, Query
 
+
 class Tournament:
 
     NATIONAL_ID = 'GB13106'
@@ -16,7 +17,7 @@ class Tournament:
     db_tournaments = db_tournaments.table('tournaments')
     tournaments_query = Query()
         
-    def __init__(self, id= None, name='', location='', description='', nb_rounds=4, players_list=None, rounds_list=None, act_round=0, start_date='', end_date=''):
+    def __init__(self, id=None, name='', location='', description='', nb_rounds=4, players_list=None, rounds_list=None, act_round=0, start_date='', end_date=''):
         self.id = id if id else secrets.token_hex(4)
         self.name = name.lower()
         self.location = location.lower()
@@ -41,6 +42,7 @@ class Tournament:
         return self.__dict__
     
     def save(self):
+        """ create ou update un tournoi selon s'il est deja ou pas dans la base"""
         result_tournament = self.db_tournaments.search(self.tournaments_query.id == self.id)
         if not result_tournament:
             self.db_tournaments.insert(self.to_dict())
