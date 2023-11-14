@@ -14,6 +14,8 @@ Installer les dependances necessaires au projet
 pip install -r requirements.txt
 ```
 
+---
+
 ### Procédure en cas de restriction de sécurité sur le lancement des scripts
 
 Dans l'invite de commandes, tapez la commande suivante pour afficher la politique d'exécution actuelle :
@@ -28,6 +30,16 @@ Set-ExecutionPolicy RemoteSigned
 
 Vous pouvez également définir la politique sur "Bypass" pour permettre l'exécution de tous les scripts sans restriction, mais cela comporte des risques de sécurité. Utilisez cette option avec prudence.
 
+---
+
+### Procédure pour générer un rapport flake8 en HTML
+
+
+Dans le terminal dans le dossier du projet , tapez la commande suivante pour afficher la politique d'exécution actuelle :
+```
+flake8 --format=html --htmldir=rapports_flake8 --exclude=.venv-projet4
+```
+Le rapport sera sauvegardé dans le dossier rapports_flake8, il suffira de lancer le fichier index.html
 # Lancement et Fonctionnement de l'Application Chess Tournament
 
 ## Tournoi d'Echecs
