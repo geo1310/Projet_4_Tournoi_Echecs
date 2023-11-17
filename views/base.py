@@ -63,7 +63,8 @@ class View:
         self.underline_title_and_cls("Liste des Tournois")
         for index, tournament in enumerate(tournaments_list, start=1):
             print(
-                "{:<2}- Nom : {:<15} Lieu : {:<15} Date de début : {:<14} Date de fin : {:<15}".format(
+                "{:<2}- Nom : {:<15} Lieu : {:<15} Date de début : {:<14} Date de fin : {:<15}"
+                .format(
                     index,
                     tournament["name"],
                     tournament["location"],
@@ -97,7 +98,7 @@ class View:
     def display_match(self, player_1, player_2):
         print(
             f"\n\t{player_1['last_name']} {player_1['first_name']}  ",
-            f"-  {player_2['last_name']} {player_2['first_name']}"
+            f"-  {player_2['last_name']} {player_2['first_name']}",
         )
 
     def display_match_result(self, player_1, player_2):

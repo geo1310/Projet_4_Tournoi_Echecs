@@ -76,13 +76,11 @@ class TournamentManage:
 
     def start_tournament(self, act_tournament):
         """lancement d'un tournoi"""
-
         # verifie si le tournoi n'est pas encore commencé
         if act_tournament.start_date == "":
             act_tournament.start_date = TournamentManage.DATE
             act_tournament.act_round = 1
             act_tournament.save()
-
         # verifie si le round est deja dans la base ou le cree
         if not any(
             round_info["number"] == act_tournament.act_round
@@ -92,7 +90,6 @@ class TournamentManage:
             act_round.create_matchs_list(act_tournament.players_list)
             act_tournament.rounds_list.append(act_round.to_dict())
             act_tournament.save()
-
         # exectution du tournoi
         rounds_list = act_tournament.rounds_list
         act_round_number = act_tournament.act_round
@@ -103,7 +100,6 @@ class TournamentManage:
         )
         self.view.underline_title_and_cls(title)
         self.view.display_something(f"Round : {act_round_number}")
-
         # instancation et lancement du round en cours
         for i, round_enum in enumerate(rounds_list):
             if round_enum.get("number") == act_round_number:
@@ -112,9 +108,27 @@ class TournamentManage:
                 break
         rounds_list[i] = act_round.to_dict()
         act_tournament.save()
-
         # lancement des matchs
-        act_matchs_list = act_round.matchs_list
+        stop_tournament = self.run_matchs(
+            act_tournament, act_round, act_round.matchs_list, i
+        )
+        # fin d'un round
+        if not stop_tournament:
+            act_round.end_date = TournamentManage.DATE
+            act_tournament.save()
+            if act_round_number < act_tournament.nb_rounds:
+                act_tournament.act_round += 1
+                act_tournament.save()
+                self.start_tournament(act_tournament)
+            else:
+                act_tournament.end_date = TournamentManage.DATE
+                act_tournament.save()
+                self.view.display_something("\nLe Tournoi est fini !!!")
+                self.view.prompt_wait_enter()
+                return None
+
+    def run_matchs(self, act_tournament, act_round, act_matchs_list, rounds_list_index):
+        # lancement des matchs
         for match_enum in act_matchs_list:
             # instance du match actuel
             act_match = Match(**match_enum)
@@ -134,7 +148,7 @@ class TournamentManage:
                 ):
                     act_match.result(int(result))
                     act_tournament.update_score_players(act_match)
-                    act_tournament.rounds_list[i] = act_round.to_dict()
+                    act_tournament.rounds_list[rounds_list_index] = act_round.to_dict()
                     # tri les joueurs par leurs scores
                     act_tournament.players_list = sorted(
                         act_tournament.players_list,
@@ -144,19 +158,4 @@ class TournamentManage:
                     # enregistrement des resultats
                     act_tournament.save()
                 else:
-                    stop_tournament = True
-                    break
-        # fin d'un round
-        if not stop_tournament:
-            act_round.end_date = TournamentManage.DATE
-            act_tournament.save()
-            if act_round_number < act_tournament.nb_rounds:
-                act_tournament.act_round += 1
-                act_tournament.save()
-                self.start_tournament(act_tournament)
-            else:
-                act_tournament.end_date = TournamentManage.DATE
-                act_tournament.save()
-                self.view.display_something("\nLe Tournoi est fini !!!")
-                self.view.prompt_wait_enter()
-                return None
+                    return True

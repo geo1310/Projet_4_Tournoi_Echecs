@@ -28,7 +28,7 @@ class Round:
 
     def create_matchs_list(self, players_list):
         if self.number == 1:
-            # creation de la liste des matchs ( joueurs choisis au hasard)
+            # creation de la liste des matchs ( joueurs choisis au hasard pour lre round 1)
             random.shuffle(players_list)
 
         # liste des joueurs ayant deja joués

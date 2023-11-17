@@ -1,5 +1,6 @@
 .*
 __*
+tests*
 !.gitignore
 !__init__.py
 /.venv-projet4

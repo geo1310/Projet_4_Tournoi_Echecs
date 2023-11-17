@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ### Procédure en cas de restriction de sécurité sur le lancement des scripts
 
-Dans l'invite de commandes, tapez la commande suivante pour afficher la politique d'exécution actuelle :
+Sous Windows ouvrez PowerShell en mode Admin, tapez la commande suivante pour afficher la politique d'exécution actuelle :
 ```
 Get-ExecutionPolicy
 ```
@@ -48,9 +48,6 @@ Gère une liste de joueurs.<br>
 Gère la création et le déroulement de Tournois D'échecs.<br>
 Génère des rapports sur les tournois et les joueurs.
 
-## Installation
-
-Installer Python `3.6+`.
 
 ## Usage
 
