@@ -30,11 +30,11 @@ class TournamentManage:
             # ajout des joueurs au tournoi
             index = 1
             while True:
-                new_player = Player(
-                    *self.view.create_player(
-                        f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location} ( Valider des champs vides pour terminer)"
-                    )
+                title = (
+                    f"Ajout du joueur {index} au tournoi {tournament.name} de {tournament.location}"
+                    "( Valider des champs vides pour terminer)"
                 )
+                new_player = Player(*self.view.create_player(title))
                 if new_player.last_name != "" and new_player.first_name != "":
                     new_player.create()
                     tournament.players_list.append(new_player.to_dict_tournament())
@@ -97,10 +97,11 @@ class TournamentManage:
         rounds_list = act_tournament.rounds_list
         act_round_number = act_tournament.act_round
         stop_tournament = False
-
-        self.view.underline_title_and_cls(
-            f"Tournoi : {act_tournament.name} de {act_tournament.location} en {act_tournament.nb_rounds} Rounds , commencé le {act_tournament.start_date}"
+        title = (
+            f"Tournoi : {act_tournament.name} de {act_tournament.location} en {act_tournament.nb_rounds} Rounds"
+            f", commencé le {act_tournament.start_date}"
         )
+        self.view.underline_title_and_cls(title)
         self.view.display_something(f"Round : {act_round_number}")
 
         # instancation et lancement du round en cours
@@ -122,9 +123,11 @@ class TournamentManage:
                 player_2 = Player.search("id", act_match.player_2[0]["id"])
                 self.view.display_match(player_1, player_2)
                 # execution du match
-                result = self.view.return_choice(
-                    "\n\tRésultat du match ( 1: Joueur 1 vainqueur, 0: match nul, 2: Joueur 2 vainqueur, autre: quitter le tournoi ) :"
+                title = (
+                    "\n\tRésultat du match ( 1: Joueur 1 vainqueur, 0: match nul"
+                    ", 2: Joueur 2 vainqueur, autre: quitter le tournoi ) :"
                 )
+                result = self.view.return_choice(title)
                 # validation d'un match
                 if result.isdigit() and (
                     result == "1" or result == "0" or result == "2"

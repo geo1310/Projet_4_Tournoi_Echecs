@@ -72,7 +72,8 @@ class View:
                 )
             )
             print(
-                "    Description : {:<30} Nb de Rounds : {:<15} Nb de Joueurs : {:<5} Round en cours : {:<5}\n".format(
+                "    Description : {:<30} Nb de Rounds : {:<15} Nb de Joueurs : {:<5} Round en cours : {:<5}\n"
+                .format(
                     tournament["description"],
                     tournament["nb_rounds"],
                     len(tournament["players_list"]),
@@ -95,7 +96,8 @@ class View:
 
     def display_match(self, player_1, player_2):
         print(
-            f"\n\t{player_1['last_name']} {player_1['first_name']}  -  {player_2['last_name']} {player_2['first_name']}"
+            f"\n\t{player_1['last_name']} {player_1['first_name']}  ",
+            f"-  {player_2['last_name']} {player_2['first_name']}"
         )
 
     def display_match_result(self, player_1, player_2):

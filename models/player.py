@@ -17,7 +17,13 @@ class Player:
     player_query = Query()
 
     def __init__(
-        self, last_name, first_name, birthday="", score=0, opponents=None, id=None
+        self,
+        last_name,
+        first_name,
+        birthday="",
+        score=0,
+        opponents=None,
+        id=None,
     ):
         self.last_name = last_name.lower()
         self.first_name = first_name.lower()
